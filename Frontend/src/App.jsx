@@ -1,9 +1,10 @@
 
 import { useEffect, useMemo, useState } from 'react'
+import api from './api/axios'
+
 import AuthForm from './components/AuthForm'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
-import './App.css'
 import CategoryFilter from './components/CategoryFilter'
 import RentalGrid from './components/RentalGrid'
 import RentalModal from './components/RentalModal'
@@ -17,18 +18,19 @@ import StorePage from './components/StorePage'
 import CartPage from './components/CartPage'
 import CheckoutPage from './components/CheckoutPage'
 
-
 import {
   createId,
   filterProducts,
   productsWithStoreInfo,
 } from './data/catalog'
+
 import {
   loadProducts,
   loadStores,
   saveProducts,
   saveStores,
 } from './data/storage'
+
 import './App.css'
 
 function App() {
@@ -43,23 +45,29 @@ function App() {
   })
 
   const [afterAuthPage, setAfterAuthPage] = useState('create-store')
+
   const [stores, setStores] = useState(() => loadStores())
   const [products, setProducts] = useState(() => loadProducts())
+
   const [searchText, setSearchText] = useState('')
   const [category, setCategory] = useState('All')
+
   const [selectedItem, setSelectedItem] = useState(null)
   const [savedRentals, setSavedRentals] = useState([])
   const [cartItems, setCartItems] = useState([])
   const [checkoutItems, setCheckoutItems] = useState([])
   const [orders, setOrders] = useState([])
+
   const [activeStoreId, setActiveStoreId] = useState(null)
   const [editingProduct, setEditingProduct] = useState(null)
   const [statusMessage, setStatusMessage] = useState('')
 
+  // Save local demo stores.
   useEffect(() => {
     saveStores(stores)
   }, [stores])
 
+  // Save local demo products.
   useEffect(() => {
     saveProducts(products)
   }, [products])
@@ -85,6 +93,7 @@ function App() {
     (store) => store.ownerId === currentUser?.id,
   )
 
+  // Navigate between application pages.
   function goTo(nextPage) {
     if (nextPage === 'create-store' && !currentUser) {
       setAfterAuthPage('create-store')
@@ -99,92 +108,75 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // Register a new user through the backend API.
+  async function handleSignUp(formData) {
+    try {
+      const response = await api.post('/auth/register', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      })
+
+      const { token, user } = response.data
+
+      localStorage.setItem('token', token)
+      localStorage.setItem('rentifyUser', JSON.stringify(user))
+
+      setCurrentUser(user)
+      setStatusMessage('Account created successfully.')
+      setPage(afterAuthPage)
+
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'Registration failed. Please try again.'
+
+      window.alert(message)
+    }
+  }
+
+  // Sign in an existing user through the backend API.
+  async function handleSignIn(formData) {
+    try {
+      const response = await api.post('/auth/login', {
+        email: formData.email,
+        password: formData.password,
+      })
+
+      const { token, user } = response.data
+
+      localStorage.setItem('token', token)
+      localStorage.setItem('rentifyUser', JSON.stringify(user))
+
+      setCurrentUser(user)
+      setStatusMessage('Signed in successfully.')
+      setPage(afterAuthPage)
+
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'Login failed. Please check your connection and try again.'
+
+      window.alert(message)
+    }
+  }
+
+  // Sign out and remove the saved authentication token.
   function handleSignOut() {
+    localStorage.removeItem('token')
     localStorage.removeItem('rentifyUser')
+
     setCurrentUser(null)
     setActiveStoreId(null)
     setStatusMessage('You have signed out.')
     setPage('home')
+
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  function handleSignUp(formData) {
-    let accounts
-
-    try {
-      accounts = JSON.parse(
-        localStorage.getItem('rentifyAccounts') || '[]',
-      )
-    } catch {
-      accounts = []
-    }
-
-    if (accounts.some((account) => account.email === formData.email)) {
-      window.alert('This email already has an account. Please sign in.')
-      setAfterAuthPage('create-store')
-      setPage('sign-in')
-      return
-    }
-
-    const account = {
-      id: createId('user'),
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-    }
-
-    const user = {
-      id: account.id,
-      name: account.name,
-      email: account.email,
-    }
-
-    localStorage.setItem(
-      'rentifyAccounts',
-      JSON.stringify([...accounts, account]),
-    )
-    localStorage.setItem('rentifyUser', JSON.stringify(user))
-
-    setCurrentUser(user)
-    setStatusMessage('Account created successfully.')
-    setPage(afterAuthPage)
-  }
-
-  function handleSignIn(formData) {
-    let accounts
-
-    try {
-      accounts = JSON.parse(
-        localStorage.getItem('rentifyAccounts') || '[]',
-      )
-    } catch {
-      accounts = []
-    }
-
-    const account = accounts.find(
-      (item) =>
-        item.email === formData.email &&
-        item.password === formData.password,
-    )
-
-    if (!account) {
-      window.alert(
-        'Email or password is incorrect. Please try again or sign up.',
-      )
-      return
-    }
-
-    const user = {
-      id: account.id,
-      name: account.name,
-      email: account.email,
-    }
-
-    localStorage.setItem('rentifyUser', JSON.stringify(user))
-    setCurrentUser(user)
-    setStatusMessage('Signed in successfully.')
-    setPage(afterAuthPage)
-  }
-
+  // Open a store dashboard belonging to the current user.
   function openDashboard(storeId) {
     const store = stores.find((item) => item.id === storeId)
 
@@ -205,6 +197,7 @@ function App() {
     goTo('dashboard')
   }
 
+  // Open a publicly viewable store.
   function openPublicStore(storeId) {
     setActiveStoreId(storeId)
     setSelectedItem(null)
@@ -215,6 +208,8 @@ function App() {
     goTo('browse')
   }
 
+  // Create a store locally.
+  // Backend store integration is a separate step.
   function handleCreateStore(formData) {
     if (!currentUser) {
       setAfterAuthPage('create-store')
@@ -233,9 +228,11 @@ function App() {
     setEditingProduct(null)
     setStatusMessage(`${newStore.name} was created successfully.`)
     setPage('dashboard')
+
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // Update a store locally.
   function handleUpdateStore(formData) {
     if (!activeStore || activeStore.ownerId !== currentUser?.id) {
       goTo('my-stores')
@@ -254,6 +251,7 @@ function App() {
     goTo('dashboard')
   }
 
+  // Delete a store and its local products.
   function handleDeleteStore() {
     if (!activeStore || activeStore.ownerId !== currentUser?.id) {
       goTo('my-stores')
@@ -283,6 +281,7 @@ function App() {
     goTo('my-stores')
   }
 
+  // Add or update a product locally.
   function handleSaveProduct(formData) {
     if (!activeStore || activeStore.ownerId !== currentUser?.id) {
       goTo('my-stores')
@@ -308,13 +307,16 @@ function App() {
       }
 
       setProducts((current) => [...current, newProduct])
-      setStatusMessage('Product added to your store and the marketplace.')
+      setStatusMessage(
+        'Product added to your store and the marketplace.',
+      )
     }
 
     setEditingProduct(null)
     goTo('dashboard')
   }
 
+  // Delete a product locally.
   function handleRemoveProduct(item) {
     if (
       !activeStore ||
@@ -324,12 +326,13 @@ function App() {
       goTo('my-stores')
       return
     }
-  
+
     const confirmed = window.confirm(
       `Are you sure you want to delete "${item.name}"? It will disappear from your store and the marketplace.`,
     )
-    
+
     if (!confirmed) return
+
     setProducts((current) =>
       current.filter((product) => product.id !== item.id),
     )
@@ -342,6 +345,7 @@ function App() {
     setStatusMessage(`${item.name} was removed.`)
   }
 
+  // Save a rental to the user's local saved list.
   function handleSaveRental(item) {
     setSavedRentals((current) => {
       if (current.some((saved) => saved.id === item.id)) {
@@ -354,89 +358,93 @@ function App() {
     setSelectedItem(null)
     goTo('my-rentals')
   }
-   
 
+  // Add an available product to the cart.
   function handleAddToCart(item) {
     if (!item || !item.available) {
       setStatusMessage('This item is currently unavailable.')
       return
     }
-  
+
     setCartItems((current) => {
       const existingItem = current.find(
-        (cartItem) => cartItem.id === item.id
+        (cartItem) => cartItem.id === item.id,
       )
-  
+
       if (existingItem) {
         setStatusMessage(`${item.name} is already in your cart.`)
         return current
       }
-  
+
       setStatusMessage(`${item.name} added to your cart.`)
-  
+
       return [...current, { ...item, days: 1 }]
     })
   }
-  
+
+  // Rent an item immediately.
   function handleRentNow(item) {
     if (!item || !item.available) {
       setStatusMessage('This item is currently unavailable.')
       return
     }
-  
+
     setCheckoutItems([{ ...item, days: 1 }])
     setSelectedItem(null)
     goTo('checkout')
   }
-  
 
-function handleOpenCart() {
-  setCheckoutItems([])
-  goTo('cart')
-}
-
-
-function handleUpdateCartDays(itemId, days) {
-  setCartItems((current) =>
-    current.map((item) =>
-      item.id === itemId ? { ...item, days } : item
-    )
-  )
-}
-
-function handleRemoveFromCart(itemId) {
-  setCartItems((current) =>
-    current.filter((item) => item.id !== itemId)
-  )
-}
-
-
-function handlePlaceOrder(customerDetails) {
-  const order = {
-    id: createId(),
-    customer: customerDetails,
-    items: checkoutItems.map((item) => ({ ...item })),
-    total: checkoutItems.reduce(
-      (sum, item) => sum + item.pricePerDay * item.days,
-      0
-    ),
-    createdAt: new Date().toISOString(),
+  function handleOpenCart() {
+    setCheckoutItems([])
+    goTo('cart')
   }
 
-  setOrders((current) => [...current, order])
-  setCartItems((current) =>
-    current.filter(
-      (cartItem) =>
-        !checkoutItems.some((item) => item.id === cartItem.id)
+  // Update the rental duration for a cart item.
+  function handleUpdateCartDays(itemId, days) {
+    setCartItems((current) =>
+      current.map((item) =>
+        item.id === itemId ? { ...item, days } : item,
+      ),
     )
-  )
-  setCheckoutItems([])
-  setStatusMessage(
-    `Order placed successfully! Order ID: ${order.id}`
-  )
-  goTo('home')
-}
+  }
 
+  // Remove a product from the cart.
+  function handleRemoveFromCart(itemId) {
+    setCartItems((current) =>
+      current.filter((item) => item.id !== itemId),
+    )
+  }
+
+  // Place an order locally.
+  // Backend booking and payment integration is a separate step.
+  function handlePlaceOrder(customerDetails) {
+    const order = {
+      id: createId(),
+      customer: customerDetails,
+      items: checkoutItems.map((item) => ({ ...item })),
+      total: checkoutItems.reduce(
+        (sum, item) => sum + item.pricePerDay * item.days,
+        0,
+      ),
+      createdAt: new Date().toISOString(),
+    }
+
+    setOrders((current) => [...current, order])
+
+    setCartItems((current) =>
+      current.filter(
+        (cartItem) =>
+          !checkoutItems.some((item) => item.id === cartItem.id),
+      ),
+    )
+
+    setCheckoutItems([])
+    setStatusMessage(
+      `Order placed successfully! Order ID: ${order.id}`,
+    )
+
+    goTo('home')
+  }
 
   const alreadySaved = selectedItem
     ? savedRentals.some((saved) => saved.id === selectedItem.id)
@@ -444,15 +452,14 @@ function handlePlaceOrder(customerDetails) {
 
   return (
     <div className="app">
-      
-<Navbar
-  currentPage={page}
-  onNavigate={goTo}
-  isLoggedIn={Boolean(currentUser)}
-  onSignOut={handleSignOut}
-  cartCount={cartItems.length}
-  onOpenCart={handleOpenCart}
-/>
+      <Navbar
+        currentPage={page}
+        onNavigate={goTo}
+        isLoggedIn={Boolean(currentUser)}
+        onSignOut={handleSignOut}
+        cartCount={cartItems.length}
+        onOpenCart={handleOpenCart}
+      />
 
       {statusMessage &&
         page !== 'create-store' &&
@@ -470,8 +477,6 @@ function handlePlaceOrder(customerDetails) {
             onOpenStore={() => goTo('create-store')}
           />
 
-        
-
           <section className="listings marketplace">
             <div className="section-heading">
               <p className="eyebrow">Marketplace</p>
@@ -486,6 +491,8 @@ function handlePlaceOrder(customerDetails) {
             <RentalGrid
               items={visibleProducts}
               onViewDetails={setSelectedItem}
+              onAddToCart={handleAddToCart}
+              onRentNow={handleRentNow}
               emptyTitle={
                 products.length === 0
                   ? 'No products yet'
@@ -520,6 +527,7 @@ function handlePlaceOrder(customerDetails) {
             <label className="sr-only" htmlFor="browse-search">
               Search rental items
             </label>
+
             <input
               id="browse-search"
               type="search"
@@ -586,8 +594,7 @@ function handlePlaceOrder(customerDetails) {
           </div>
 
           <p className="form-intro">
-            Store details are saved in this browser for the demo. They are not
-            sent to a shared server yet.
+            Store details are currently saved in this browser.
           </p>
 
           <StoreForm
@@ -632,15 +639,15 @@ function handlePlaceOrder(customerDetails) {
             onEmptyAction={() => goTo('create-store')}
           />
 
-{myStores.length > 0 && (
-  <button
-    type="button"
-    className="btn btn-primary"
-    onClick={() => goTo('create-store')}
-  >
-    Create Another Store
-  </button>
-)}
+          {myStores.length > 0 && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => goTo('create-store')}
+            >
+              Create Another Store
+            </button>
+          )}
         </main>
       )}
 
@@ -718,29 +725,28 @@ function handlePlaceOrder(customerDetails) {
           />
         </main>
       )}
-         
-{page === 'cart' && (
-  <CartPage
-    items={cartItems}
-    onUpdateDays={handleUpdateCartDays}
-    onRemove={handleRemoveFromCart}
-    onCheckout={() => {
-      setCheckoutItems(cartItems)
-      goTo('checkout')
-    }}
-    onContinueShopping={() => goTo('browse')}
-  />
-)}
- 
-{page === 'checkout' && (
-  <CheckoutPage
-    items={checkoutItems}
-    onPlaceOrder={handlePlaceOrder}
-    onBackToCart={handleOpenCart}
-    onContinueShopping={() => goTo('browse')}
-  />
-)}
 
+      {page === 'cart' && (
+        <CartPage
+          items={cartItems}
+          onUpdateDays={handleUpdateCartDays}
+          onRemove={handleRemoveFromCart}
+          onCheckout={() => {
+            setCheckoutItems(cartItems)
+            goTo('checkout')
+          }}
+          onContinueShopping={() => goTo('browse')}
+        />
+      )}
+
+      {page === 'checkout' && (
+        <CheckoutPage
+          items={checkoutItems}
+          onPlaceOrder={handlePlaceOrder}
+          onBackToCart={handleOpenCart}
+          onContinueShopping={() => goTo('browse')}
+        />
+      )}
 
       {(page === 'sign-up' || page === 'sign-in') && (
         <AuthForm
@@ -756,19 +762,17 @@ function handlePlaceOrder(customerDetails) {
       <Footer onNavigate={goTo} />
 
       <RentalModal
-  item={selectedItem}
-  onClose={() => setSelectedItem(null)}
-  onVisitStore={openPublicStore}
-  onSaveRental={handleSaveRental}
-  onAddToCart={handleAddToCart}
-  onRentNow={handleRentNow}
-  alreadySaved={alreadySaved}
- 
-  isStoreOwner={myStores.some(
-    (store) => store.id === selectedItem?.storeId
-  )}
-
-/>
+        item={selectedItem}
+        onClose={() => setSelectedItem(null)}
+        onVisitStore={openPublicStore}
+        onSaveRental={handleSaveRental}
+        onAddToCart={handleAddToCart}
+        onRentNow={handleRentNow}
+        alreadySaved={alreadySaved}
+        isStoreOwner={myStores.some(
+          (store) => store.id === selectedItem?.storeId,
+        )}
+      />
     </div>
   )
 }
