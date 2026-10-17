@@ -483,26 +483,31 @@ function handlePlaceOrder(customerDetails) {
               onSelectCategory={setCategory}
             />
 
-            <RentalGrid
-              items={visibleProducts}
-              onViewDetails={setSelectedItem}
-              emptyTitle={
-                products.length === 0
-                  ? 'No products yet'
-                  : 'No products match that search'
-              }
-              emptyText={
-                products.length === 0
-                  ? 'When store owners add items, they will show up here.'
-                  : 'Try a different name or choose another category.'
-              }
-              emptyActionLabel="Open Your Store"
-              onEmptyAction={
-                products.length === 0
-                  ? () => goTo('create-store')
-                  : undefined
-              }
-            />
+            
+            
+<RentalGrid
+  items={visibleProducts}
+  onViewDetails={setSelectedItem}
+  onAddToCart={handleAddToCart}
+  onRentNow={handleRentNow}
+  emptyTitle={
+    products.length === 0
+      ? 'No products yet'
+      : 'No products match that search'
+  }
+  emptyText={
+    products.length === 0
+      ? 'When store owners add items, they will show up here.'
+      : 'Try a different name or choose another category.'
+  }
+  emptyActionLabel="Open Your Store"
+  onEmptyAction={
+    products.length === 0
+      ? () => goTo('create-store')
+      : undefined
+  }
+/>
+
           </section>
 
           <HowItWorks />
