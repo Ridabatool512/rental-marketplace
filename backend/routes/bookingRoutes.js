@@ -6,12 +6,13 @@ const {
   createBooking,
   getMyBookings,
   getReceivedBookings,
+  getAllBookings,
   updateBookingStatus,
   cancelBooking,
   completeBooking,
 } = require("../controllers/bookingController");
 
-const { protect } = require("../middleware/authMiddleware");
+const { protect, requireAdmin } = require("../middleware/authMiddleware");
 
 router.post("/", protect, createBooking);
 
@@ -19,7 +20,9 @@ router.get("/my", protect, getMyBookings);
 
 router.get("/received", protect, getReceivedBookings);
 
-router.patch("/:id/status", protect, updateBookingStatus);
+// Admin-only booking queue and approval/rejection.
+router.get("/admin/all", protect, requireAdmin, getAllBookings);
+router.patch("/:id/status", protect, requireAdmin, updateBookingStatus);
 
 router.patch("/:id/cancel", protect, cancelBooking);
 
