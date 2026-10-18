@@ -710,6 +710,7 @@ async function handlePlaceOrder(customerDetails) {
   onOpenBookings={() => goTo('my-bookings')}
   onOpenAdminBookings={() => goTo('admin-bookings')}
   ownerBookingUpdates={ownerBookingUpdates}
+  ownerHasStore={myStores.length > 0}
 />
 
       {statusMessage &&
