@@ -234,9 +234,15 @@ function App() {
   const activeStore =
     stores.find((store) => String(store.id) === String(activeStoreId)) || null
 
-  const storeProducts = activeStore?.backendStore
-    ? backendListings.filter((item) => String(item.storeId) === String(activeStoreId))
-    : localProductsForDisplay.filter((item) => String(item.storeId) === String(activeStoreId))
+  const storeProducts = activeStore
+    ? (activeStore.backendStore ? backendListings : localProductsForDisplay).filter((item) => {
+        if (String(item.storeId) === String(activeStore.id)) return true
+        if (activeStore.ownerId && item.ownerId && String(item.ownerId) === String(activeStore.ownerId)) {
+          return String(item.storeName || '').trim().toLowerCase() === String(activeStore.name || '').trim().toLowerCase()
+        }
+        return false
+      })
+    : []
 
   const myStores = stores.filter(
     (store) => String(store.ownerId) === String(currentUser?.id),
@@ -338,8 +344,32 @@ function App() {
     goTo('dashboard')
   }
 
-  function openPublicStore(storeId) {
-    setActiveStoreId(storeId)
+  function openPublicStore(storeOrProduct) {
+    const isProduct = storeOrProduct && typeof storeOrProduct === 'object'
+    const requestedStoreId = String(isProduct ? storeOrProduct.storeId || '' : storeOrProduct || '')
+    let store = stores.find((item) => requestedStoreId && String(item.id) === requestedStoreId)
+
+    // Some older listings may not have a store ID. Resolve only when the
+    // product's store name/location identifies a store unambiguously.
+    if (!store && isProduct) {
+      const productStoreName = String(storeOrProduct.storeName || '').trim().toLowerCase()
+      const productLocation = String(storeOrProduct.location || '').trim().toLowerCase()
+      const matches = stores.filter((item) =>
+        productStoreName &&
+        String(item.name || '').trim().toLowerCase() === productStoreName &&
+        (!productLocation || String(item.location || '').trim().toLowerCase() === productLocation)
+      )
+      if (matches.length === 1) store = matches[0]
+    }
+
+    if (!store) {
+      setSelectedItem(null)
+      setStatusMessage('This product is not linked to a store yet. Please open Store Explorer to choose a store.')
+      goTo('stores')
+      return
+    }
+
+    setActiveStoreId(String(store.id))
     setSelectedItem(null)
     goTo('store-page')
   }
