@@ -21,10 +21,10 @@ router.get("/my", protect, getMyBookings);
 
 router.get("/received", protect, getReceivedBookings);
 
-// Admin-only booking queue and approval/rejection.
+// Admin can view the booking queue, but only the listing owner can decide a booking.
 router.get("/admin/all", protect, requireAdmin, getAllBookings);
-router.patch("/:id/status", protect, requireAdmin, updateBookingStatus);
-router.patch("/:id/cod-payment", protect, requireAdmin, markCodPaymentReceived);
+router.patch("/:id/status", protect, updateBookingStatus);
+router.patch("/:id/cod-payment", protect, markCodPaymentReceived);
 
 router.patch("/:id/cancel", protect, cancelBooking);
 
