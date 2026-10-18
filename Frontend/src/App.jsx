@@ -48,6 +48,7 @@ function mapBackendListing(listing) {
     images: listing.images || [],
     pricePerDay: listing.pricePerDay,
     quantity: Number(listing.quantity ?? 1),
+    status: listing.status,
     available: listing.status === 'available' && Number(listing.quantity ?? 1) > 0,
     storeName: listing.store?.name || listing.owner?.name || 'Rental owner',
     location: listing.store?.location || listing.location || '',
