@@ -89,7 +89,22 @@ function App() {
   const [searchText, setSearchText] = useState('')
   const [category, setCategory] = useState('All')
   const [selectedItem, setSelectedItem] = useState(null)
-  const [savedRentals, setSavedRentals] = useState([])
+  const [savedRentals, setSavedRentals] = useState(() => {
+    try {
+      const saved = localStorage.getItem('rentifySavedRentals')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('rentifySavedRentals', JSON.stringify(savedRentals))
+    } catch {
+      // Saved rentals remain available in the current session if storage is unavailable.
+    }
+  }, [savedRentals])
   const [cartItems, setCartItems] = useState([])
   const [checkoutItems, setCheckoutItems] = useState([])
   const [orders, setOrders] = useState([])
