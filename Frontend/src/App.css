@@ -1703,3 +1703,54 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 @media (max-width: 700px) {
   .hero-proof { display: grid; gap: 10px; font-size: .8rem; }
 }
+
+
+/* Store-owner booking update indicators */
+.nav-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  margin-left: 0.4rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: #b45309;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.booking-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: #334155;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+
+.booking-status-approved {
+  background: #e4f3e9;
+  color: #216e43;
+}
+
+.booking-status-rejected,
+.booking-status-cancelled {
+  background: #fbe9e7;
+  color: #a83228;
+}
+
+.booking-status-pending {
+  background: #fff2d6;
+  color: #8a5a00;
+}
+
+.booking-status-completed {
+  background: #e6eefb;
+  color: #28549a;
+}
