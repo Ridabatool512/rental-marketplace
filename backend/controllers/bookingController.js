@@ -26,7 +26,7 @@ const parseDate = (value) => {
 // Create a booking request
 const createBooking = async (req, res) => {
   try {
-    const { listingId, startDate, endDate } = req.body;
+    const { listingId, startDate, endDate, phone, address, notes } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(listingId || "")) {
       return res.status(400).json({
@@ -40,6 +40,24 @@ const createBooking = async (req, res) => {
     if (!start || !end) {
       return res.status(400).json({
         message: "Dates must use YYYY-MM-DD format.",
+      });
+    }
+
+    if (
+      typeof phone !== "string" ||
+      !phone.trim() ||
+      typeof address !== "string" ||
+      !address.trim()
+    ) {
+      return res.status(400).json({
+        message: "A contact phone number and delivery address are required.",
+      });
+    }
+
+    if (phone.trim().length > 40 || address.trim().length > 500 ||
+      (notes !== undefined && (typeof notes !== "string" || notes.length > 1000))) {
+      return res.status(400).json({
+        message: "Contact details are too long or invalid.",
       });
     }
 
@@ -109,6 +127,9 @@ const createBooking = async (req, res) => {
       totalDays,
       pricePerDay,
       totalPrice,
+      contactPhone: phone.trim(),
+      deliveryAddress: address.trim(),
+      notes: typeof notes === "string" ? notes.trim() : "",
       status: "pending",
     });
 
