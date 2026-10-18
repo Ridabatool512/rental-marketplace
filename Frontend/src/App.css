@@ -1679,3 +1679,27 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+
+.hero-proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin-top: 24px;
+  color: #d6e6e8;
+  font-size: .83rem;
+}
+.hero-proof span { display: inline-flex; align-items: center; gap: 8px; }
+.hero-proof b {
+  display: inline-grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: rgba(166, 220, 207, .16);
+  color: #b8e6dc;
+  font-size: .75rem;
+}
+@media (max-width: 700px) {
+  .hero-proof { display: grid; gap: 10px; font-size: .8rem; }
+}
