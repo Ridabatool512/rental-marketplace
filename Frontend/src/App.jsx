@@ -740,9 +740,9 @@ async function handlePlaceOrder(customerDetails) {
 
           <section className="listings marketplace">
             <div className="section-heading">
-              <p className="eyebrow">The marketplace</p>
-              <h2>Useful things, ready when you need them.</h2>
-              <p className="section-description">Browse real listings from Rentify store owners, compare daily prices, and choose what fits your plans.</p>
+              <p className="eyebrow">Find your next rental</p>
+              <h2>Good for the plan. Better than buying.</h2>
+              <p className="section-description">Explore live listings from Rentify store owners, compare daily prices, and choose what fits what you have in mind.</p>
             </div>
 
             <CategoryFilter
@@ -769,9 +769,9 @@ async function handlePlaceOrder(customerDetails) {
 
           <section className="rental-confidence" aria-labelledby="rental-confidence-title">
             <div className="confidence-heading">
-              <p className="eyebrow">Clear from the start</p>
-              <h2 id="rental-confidence-title">A better way to borrow what you need.</h2>
-              <p>Make your plans with the listing details in front of you, and know what happens before a rental is confirmed.</p>
+              <p className="eyebrow">No surprises</p>
+              <h2 id="rental-confidence-title">Know what happens next.</h2>
+              <p>See the listed daily price, send your dates, and wait for the store owner to review your request before it is confirmed.</p>
             </div>
             <div className="confidence-points">
               <article>
