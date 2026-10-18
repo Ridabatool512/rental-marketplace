@@ -6973,15 +6973,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 
-/* Distinct sage-green marketplace hero background */
+/* Warm ivory and muted terracotta to match Rentify's existing palette */
 .hero.hero-marketplace {
-  background: #d5e2cb !important;
-  background-image: linear-gradient(120deg, #d5e2cb 0%, #e2e9d8 55%, #cbdcc1 100%) !important;
-  border-bottom: 1px solid #b9cbae;
+  background: #f3e7df !important;
+  background-image: linear-gradient(115deg, #f3e7df 0%, #f8f0e9 52%, #ecd8cc 100%) !important;
+  border-bottom: 1px solid #e2c7b8;
 }
 .marketplace-simple-top {
-  border-bottom: 1px solid rgba(52, 72, 46, 0.2);
+  border-bottom: 1px solid rgba(129, 71, 52, 0.18);
 }
 .marketplace-simple-search {
-  border-color: rgba(52, 72, 46, 0.32);
+  border-color: rgba(129, 71, 52, 0.28);
 }
