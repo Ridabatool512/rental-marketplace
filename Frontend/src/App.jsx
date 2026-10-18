@@ -241,7 +241,9 @@ function App() {
 
   async function handleSignIn(formData) {
     try {
-      const response = await api.post('/auth/login', {
+      const isAdminLogin = afterAuthPage === 'admin-bookings'
+      const loginEndpoint = isAdminLogin ? '/auth/admin/login' : '/auth/login'
+      const response = await api.post(loginEndpoint, {
         email: formData.email,
         password: formData.password,
       })
@@ -850,6 +852,7 @@ async function handlePlaceOrder(customerDetails) {
       {(page === 'sign-up' || page === 'sign-in') && (
         <AuthForm
           mode={page}
+          isAdminLogin={page === 'sign-in' && afterAuthPage === 'admin-bookings'}
           onSubmit={page === 'sign-up' ? handleSignUp : handleSignIn}
           onSwitch={() => {
             setPage(page === 'sign-up' ? 'sign-in' : 'sign-up')
