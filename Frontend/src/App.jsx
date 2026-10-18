@@ -740,9 +740,9 @@ async function handlePlaceOrder(customerDetails) {
 
           <section className="listings marketplace">
             <div className="section-heading">
-              <p className="eyebrow">The marketplace</p>
-              <h2>Available to rent</h2>
-              <p className="section-description">Real listings from local store owners, with daily prices shown upfront.</p>
+              <p className="eyebrow">The good stuff, nearby</p>
+              <h2>Find what you came for.</h2>
+              <p className="section-description">Browse the listings. Compare daily prices. Pick what works for you.</p>
             </div>
 
             <CategoryFilter
