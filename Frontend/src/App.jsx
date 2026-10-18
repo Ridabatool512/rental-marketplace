@@ -36,7 +36,7 @@ import './App.css'
 
 function mapBackendListing(listing) {
   return {
-    id: listing._id,
+    id: String(listing._id || listing.id || ''),
     backendListing: true,
     name: listing.title,
     description: listing.description,
@@ -49,21 +49,21 @@ function mapBackendListing(listing) {
     available: listing.status === 'available',
     storeName: listing.store?.name || listing.owner?.name || 'Rental owner',
     location: listing.store?.location || listing.location || '',
-    storeId: listing.store?._id || listing.store || '',
-    ownerId: listing.owner?._id || listing.owner || '',
+    storeId: String(listing.store?._id || listing.store || ''),
+    ownerId: String(listing.owner?._id || listing.owner || ''),
     storeCategory: listing.store?.category || 'General',
   }
 }
 
 function mapBackendStore(store) {
   return {
-    id: store._id,
+    id: String(store._id || store.id || ''),
     name: store.name,
     description: store.description || '',
     location: store.location || '',
     category: store.category || 'General',
     coverImage: store.coverImage || '',
-    ownerId: store.owner?._id || store.owner || '',
+    ownerId: String(store.owner?._id || store.owner || store.ownerId || ''),
     ownerName: store.owner?.name || '',
     backendStore: true,
   }
@@ -168,10 +168,33 @@ function App() {
 
     api.get('/stores')
       .then((response) => {
-        if (active) setStores((response.data.stores || []).map(mapBackendStore))
+        if (!active) return
+        const remoteStores = (response.data.stores || []).map(mapBackendStore)
+        const legacyStores = loadStores().map((store) => ({
+          ...store,
+          id: String(store.id || ''),
+          ownerId: String(store.ownerId || ''),
+          backendStore: false,
+        }))
+        const remoteKeys = new Set(
+          remoteStores.map((store) => `${store.name.trim().toLowerCase()}|${store.location.trim().toLowerCase()}`),
+        )
+        const uniqueLegacyStores = legacyStores.filter((store) => {
+          const key = `${String(store.name || '').trim().toLowerCase()}|${String(store.location || '').trim().toLowerCase()}`
+          return store.id && !remoteKeys.has(key)
+        })
+        setStores([...remoteStores, ...uniqueLegacyStores])
       })
       .catch((error) => {
-        if (active) setStatusMessage(error.response?.data?.message || 'Could not load stores from the server.')
+        if (!active) return
+        const legacyStores = loadStores().map((store) => ({
+          ...store,
+          id: String(store.id || ''),
+          ownerId: String(store.ownerId || ''),
+          backendStore: false,
+        }))
+        setStores(legacyStores)
+        setStatusMessage(error.response?.data?.message || 'Could not load stores from the server. Showing stores saved in this browser.')
       })
 
     const token = sessionStorage.getItem('token')
@@ -209,14 +232,14 @@ function App() {
   )
 
   const activeStore =
-    stores.find((store) => store.id === activeStoreId) || null
+    stores.find((store) => String(store.id) === String(activeStoreId)) || null
 
-  const storeProducts = backendListings.filter(
-    (item) => item.storeId === activeStoreId,
-  )
+  const storeProducts = activeStore?.backendStore
+    ? backendListings.filter((item) => String(item.storeId) === String(activeStoreId))
+    : localProductsForDisplay.filter((item) => String(item.storeId) === String(activeStoreId))
 
   const myStores = stores.filter(
-    (store) => store.ownerId === currentUser?.id,
+    (store) => String(store.ownerId) === String(currentUser?.id),
   )
 
   function goTo(nextPage) {
@@ -296,7 +319,7 @@ function App() {
   }
 
   function openDashboard(storeId) {
-    const store = stores.find((item) => item.id === storeId)
+    const store = stores.find((item) => String(item.id) === String(storeId))
 
     if (!currentUser) {
       setAfterAuthPage('my-stores')
@@ -304,7 +327,7 @@ function App() {
       return
     }
 
-    if (!store || store.ownerId !== currentUser.id) {
+    if (!store || String(store.ownerId) !== String(currentUser.id)) {
       setStatusMessage('You can only manage your own stores.')
       goTo('my-stores')
       return
@@ -347,7 +370,7 @@ function App() {
   }
 
   async function handleUpdateStore(formData) {
-    if (!activeStore || activeStore.ownerId !== currentUser?.id) {
+    if (!activeStore || String(activeStore.ownerId) !== String(currentUser?.id)) {
       goTo('my-stores')
       return
     }
@@ -355,7 +378,7 @@ function App() {
     try {
       const response = await api.put('/stores/' + activeStore.id, formData)
       const updatedStore = mapBackendStore(response.data.store)
-      setStores((current) => current.map((store) => store.id === updatedStore.id ? updatedStore : store))
+      setStores((current) => current.map((store) => String(store.id) === String(updatedStore.id) ? updatedStore : store))
       setStatusMessage('Store details were updated.')
       goTo('dashboard')
     } catch (error) {
@@ -787,7 +810,7 @@ async function handlePlaceOrder(customerDetails) {
 
       {page === 'dashboard' &&
         activeStore &&
-        activeStore.ownerId === currentUser?.id && (
+        String(activeStore.ownerId) === String(currentUser?.id) && (
           <StoreDashboard
             store={activeStore}
             products={storeProducts}
@@ -832,14 +855,28 @@ async function handlePlaceOrder(customerDetails) {
           products={storeProducts}
           onViewDetails={setSelectedItem}
           onBack={() => {
-            if (activeStore.ownerId === currentUser?.id) {
+            if (String(activeStore.ownerId) === String(currentUser?.id) && activeStore.backendStore) {
               openDashboard(activeStore.id)
             } else {
-              goTo('browse')
+              goTo('stores')
             }
           }}
-          onManage={() => openDashboard(activeStore.id)}
+          onManage={activeStore.backendStore && String(activeStore.ownerId) === String(currentUser?.id)
+            ? () => openDashboard(activeStore.id)
+            : undefined}
         />
+      )}
+
+      {page === 'store-page' && !activeStore && (
+        <main className="page">
+          <div className="empty-state">
+            <h2>Store could not be found</h2>
+            <p>The store list may still be loading, or this store is no longer available.</p>
+            <button type="button" className="btn btn-primary" onClick={() => goTo('stores')}>
+              Back to Store Explorer
+            </button>
+          </div>
+        </main>
       )}
 
       {page === 'my-rentals' && (
@@ -916,7 +953,7 @@ async function handlePlaceOrder(customerDetails) {
   alreadySaved={alreadySaved}
  
   isStoreOwner={myStores.some(
-    (store) => store.id === selectedItem?.storeId
+    (store) => String(store.id) === String(selectedItem?.storeId)
   )}
 
 />
