@@ -1,6 +1,7 @@
 
 const mongoose = require("mongoose");
 const Listing = require("../models/Listing");
+const Store = require("../models/Store");
 
 const createListing = async (req, res) => {
   try {
@@ -14,6 +15,7 @@ const createListing = async (req, res) => {
       pricePerWeek,
       pricePerMonth,
       location,
+      storeId,
     } = req.body;
 
     if (
@@ -31,7 +33,7 @@ const createListing = async (req, res) => {
     ) {
       return res.status(400).json({
         message:
-          "Title, description, category, location, and daily price are required.",
+          "Title, description, category, location, store, and daily price are required.",
       });
     }
 
@@ -42,6 +44,14 @@ const createListing = async (req, res) => {
       return res.status(400).json({
         message: "Title or description exceeds the allowed length.",
       });
+    }
+
+    const store = await Store.findById(storeId);
+    if (!store) {
+      return res.status(404).json({ message: "Store not found." });
+    }
+    if (store.owner.toString() !== req.user.id) {
+      return res.status(403).json({ message: "You can only add listings to your own store." });
     }
 
     const dailyPrice = Number(pricePerDay);
@@ -97,6 +107,7 @@ const createListing = async (req, res) => {
         }),
       location: location.trim(),
       owner: req.user.id,
+      store: store._id,
     });
 
     return res.status(201).json({
@@ -211,6 +222,7 @@ const getListings = async (req, res) => {
     const [listings, total] = await Promise.all([
       Listing.find(filter)
         .populate("owner", "name")
+        .populate("store", "name category location coverImage")
         .sort({ createdAt: -1 })
         .skip((pageNumber - 1) * pageSize)
         .limit(pageSize)
@@ -251,6 +263,7 @@ const getListingById = async (req, res) => {
 
     const listing = await Listing.findById(req.params.id)
       .populate("owner", "name")
+      .populate("store", "name category location coverImage")
       .lean();
 
     if (!listing) {
