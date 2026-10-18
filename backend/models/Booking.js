@@ -49,6 +49,24 @@ const bookingSchema = new mongoose.Schema(
       min: 1,
     },
 
+    contactPhone: {
+      type: String,
+      trim: true,
+      maxlength: 40,
+    },
+
+    deliveryAddress: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+    },
+
+    notes: {
+      type: String,
+      trim: true,
+      maxlength: 1000,
+    },
+
     status: {
       type: String,
       enum: [
