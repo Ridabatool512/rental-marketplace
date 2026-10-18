@@ -16,12 +16,12 @@ function Hero({
         <div className="hero-copy">
           <div className="hero-kicker">
             <span className="hero-kicker-dot" />
-            GOOD FINDS. SHORT-TERM COMMITMENTS.
+            THE RENTAL CLUB <span className="hero-kicker-note">✳ good finds only</span>
           </div>
-          <h1>Your next fave thing? <span>Rent it.</span></h1>
+          <h1>Your next obsession, <span>on your terms.</span></h1>
           <p className="hero-text">
-            From weekend plans to everyday essentials, find cool stuff from
-            independent stores nearby. Use it, love it, give it back.
+            Big plans, tiny budgets, zero clutter. Find the things you want
+            from independent stores — rent them for a while, then pass them on.
           </p>
 
           <form className="search-form" onSubmit={handleSubmit}>
@@ -32,50 +32,50 @@ function Hero({
             <input
               id="rental-search"
               type="search"
-              placeholder="What are we renting today?"
+              placeholder="Try camera, outfit, furniture..."
               value={searchText}
               onChange={(event) => onSearchChange(event.target.value)}
             />
             <button type="submit" className="btn btn-primary">
-              Find my thing <span aria-hidden="true">↗</span>
+              Find my fave <span aria-hidden="true">↗</span>
             </button>
           </form>
 
           <div className="hero-actions">
             <button type="button" className="btn btn-hero" onClick={onBrowse}>
-              Explore the goods <span aria-hidden="true">→</span>
+              Explore rentals <span aria-hidden="true">↗</span>
             </button>
             <button type="button" className="hero-owner-link" onClick={onOpenStore}>
-              Got stuff to share? <strong>Open your store</strong>
+              Got good stuff? <strong>Put it up for rent</strong>
             </button>
           </div>
 
           <div className="hero-proof" aria-label="Marketplace benefits">
-            <span><b aria-hidden="true">✓</b> Local independent stores</span>
+            <span><b aria-hidden="true">✓</b> Local finds</span>
             <span><b aria-hidden="true">✓</b> Clear daily prices</span>
-            <span><b aria-hidden="true">✓</b> Owner-approved requests</span>
+            <span><b aria-hidden="true">✓</b> Owner-approved rentals</span>
           </div>
         </div>
 
-        <div className="hero-visual" aria-label="Discover items available to rent">
-          <div className="hero-photo" role="img" aria-label="Bright creative workspace" />
+        <div className="hero-visual" aria-label="Discover stylish items available to rent">
+          <div className="hero-photo" role="img" aria-label="A curated, stylish modern interior" />
           <div className="hero-photo-shade" />
           <div className="hero-visual-caption">
-            <span className="hero-caption-label">LESS STUFF, MORE STORIES</span>
-            <strong>Borrow the vibe. Skip the clutter.</strong>
-            <span>Your next little obsession is out there.</span>
+            <span className="hero-caption-label">YOUR NEXT LITTLE YES</span>
+            <strong>Try the thing. Live the moment.</strong>
+            <span>Keep the memories, not the clutter.</span>
           </div>
           <div className="hero-floating-card">
             <span className="hero-floating-icon" aria-hidden="true">✳</span>
             <div>
-              <strong>A good find is calling</strong>
-              <span>Discover something worth borrowing</span>
+              <strong>It's giving main character</strong>
+              <span>Find your next favourite thing</span>
             </div>
           </div>
-          <div className="hero-image-tag"><span /> Use more. Waste less.</div>
+          <div className="hero-image-tag"><span /> Rent it. Make it yours.</div>
         </div>
       </div>
-      <div className="hero-sticker" aria-hidden="true">rent the<br />good stuff <span>✳</span></div>
+      <div className="hero-sticker" aria-hidden="true"><span>LESS BUYING</span><b>MORE</b><span>TRYING ✳</span></div>
     </section>
   )
 }
