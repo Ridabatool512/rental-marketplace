@@ -30,7 +30,7 @@ function Hero({
           </h1>
           <p className="hero-text">
             From the camera you need for a weekend to the tools for a home project,
-            find useful things nearby—only for as long as you need them.
+            find useful things from independent stores—only for as long as you need them.
           </p>
 
           <form className="search-form" onSubmit={handleSubmit} role="search">
