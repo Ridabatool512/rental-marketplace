@@ -5,6 +5,7 @@ function MyBookings() {
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [payingId, setPayingId] = useState('')
 
   const loadBookings = useCallback(async () => {
     setLoading(true)
@@ -23,12 +24,26 @@ function MyBookings() {
     loadBookings()
   }, [loadBookings])
 
+  async function payOnline(booking) {
+    setPayingId(booking._id)
+    setError('')
+    try {
+      const paymentResponse = await api.post('/payments/demo', { bookingId: booking._id })
+      await api.post(`/payments/${paymentResponse.data.payment._id}/simulate`, { outcome: 'success' })
+      await loadBookings()
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || 'Could not complete the demo payment.')
+    } finally {
+      setPayingId('')
+    }
+  }
+
   return (
     <main className="page">
       <div className="section-heading">
         <p className="eyebrow">Your account</p>
         <h2>My Rental Requests</h2>
-        <p>Check the status of your rental requests.</p>
+        <p>Check request approval and payment status here.</p>
       </div>
 
       <button type="button" className="btn btn-secondary" onClick={loadBookings} disabled={loading}>
@@ -52,12 +67,24 @@ function MyBookings() {
               <p>Rental dates: {new Date(booking.startDate).toLocaleDateString()} – {new Date(booking.endDate).toLocaleDateString()}</p>
               <p>{booking.totalDays} day(s) × Rs. {booking.pricePerDay}</p>
               <p><strong>Total: Rs. {booking.totalPrice}</strong></p>
-              <p><strong>Status:</strong> {booking.status}</p>
-              <p><strong>Payment:</strong> {booking.paymentStatus}</p>
+              <p><strong>Request status:</strong> {booking.status}</p>
+              <p><strong>Payment method:</strong> {booking.paymentMethod === 'online' ? 'Online payment' : 'Cash on Delivery (COD)'}</p>
+              <p><strong>Payment status:</strong> {booking.paymentMethod === 'cod' ? 'Due on delivery' : (booking.paymentStatus || 'unpaid')}</p>
+              {booking.status === 'approved' && booking.paymentMethod === 'online' && ['unpaid', 'failed'].includes(booking.paymentStatus) && (
+                <div className="card-actions">
+                  <button type="button" className="btn btn-primary" disabled={payingId === booking._id} onClick={() => payOnline(booking)}>
+                    {payingId === booking._id ? 'Processing...' : 'Pay Online (Demo)'}
+                  </button>
+                </div>
+              )}
+              {booking.paymentMethod === 'online' && booking.status === 'pending' && (
+                <p>Online payment will be available after admin approval.</p>
+              )}
             </div>
           </article>
         ))}
       </div>
+      <p className="payment-demo-note">Demo notice: online payments are simulated for project testing. No real money is charged.</p>
     </main>
   )
 }
