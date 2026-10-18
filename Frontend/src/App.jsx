@@ -740,9 +740,9 @@ async function handlePlaceOrder(customerDetails) {
 
           <section className="listings marketplace">
             <div className="section-heading">
-              <p className="eyebrow">Find your next rental</p>
-              <h2>Good for the plan. Better than buying.</h2>
-              <p className="section-description">Explore live listings from Rentify store owners, compare daily prices, and choose what fits what you have in mind.</p>
+              <p className="eyebrow">The marketplace</p>
+              <h2>Available to rent</h2>
+              <p className="section-description">Real listings from local store owners, with daily prices shown upfront.</p>
             </div>
 
             <CategoryFilter
