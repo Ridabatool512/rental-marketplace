@@ -7182,3 +7182,45 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .navbar .mobile-nav-actions {
   border-color: #b77b6e;
 }
+
+
+/* Muted maroon navbar to complement the warm ivory hero */
+.navbar {
+  background: #a65360 !important;
+  border-bottom-color: #91434f !important;
+  box-shadow: 0 2px 10px rgba(83, 35, 43, 0.10);
+}
+.navbar .logo,
+.navbar .nav-link {
+  color: #fff8f5;
+}
+.navbar .logo-mark {
+  background: #8e3d4b;
+  color: #fffaf6;
+}
+.navbar .nav-link.active,
+.navbar .nav-link:hover {
+  color: #ffffff;
+  background: #91434f;
+}
+.navbar .nav-actions .btn-primary,
+.navbar .btn-primary {
+  border-color: #f0d7cf;
+  background: #f3e7df;
+  color: #71313d;
+}
+.navbar .nav-actions .btn-primary:hover,
+.navbar .btn-primary:hover:not(:disabled) {
+  border-color: #fff3ed;
+  background: #fff3ed;
+  color: #642a35;
+}
+.navbar .nav-menu-toggle {
+  border-color: #b96c77;
+  background: #91434f;
+  color: #fff8f5;
+}
+.navbar .nav-links,
+.navbar .mobile-nav-actions {
+  border-color: #b96c77;
+}
