@@ -62,6 +62,12 @@ const listingSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    store: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Store",
+      required: true,
+      index: true,
+    },
 
     status: {
       type: String,
