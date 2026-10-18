@@ -97,6 +97,12 @@ const loginUser = async (req, res) => {
       });
     }
 
+    if (user.role === "admin") {
+      return res.status(403).json({
+        message: "This is an admin account. Please use the admin login page.",
+      });
+    }
+
     const token = generateToken(user._id);
 
     return res.status(200).json({
@@ -114,6 +120,55 @@ const loginUser = async (req, res) => {
 
     return res.status(500).json({
       message: "Server error during login",
+    });
+  }
+};
+
+
+// Admin login: only an existing admin account can use this endpoint.
+const adminLoginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required",
+      });
+    }
+
+    const user = await User.findOne({
+      email: email.trim().toLowerCase(),
+    }).select("+password");
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({
+        message: "Invalid admin email or password",
+      });
+    }
+
+    if (user.role !== "admin") {
+      return res.status(403).json({
+        message: "This account is not authorized for admin access.",
+      });
+    }
+
+    const token = generateToken(user._id);
+
+    return res.status(200).json({
+      message: "Admin login successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error("Admin login error:", error.message);
+
+    return res.status(500).json({
+      message: "Server error during admin login",
     });
   }
 };
@@ -149,5 +204,6 @@ const getMe = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  adminLoginUser,
   getMe,
 };
