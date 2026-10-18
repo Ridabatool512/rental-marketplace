@@ -386,7 +386,12 @@ function App() {
     try {
       if (editingProduct?.backendListing) {
         const response = await api.put(`/listings/${editingProduct.id}`, listingData)
-        const updated = mapBackendListing(response.data.listing)
+        const updated = {
+          ...mapBackendListing(response.data.listing),
+          storeName: activeStore.name,
+          storeId: activeStore.id,
+          location: activeStore.location,
+        }
         setBackendListings((current) => current.map((item) => item.id === updated.id ? updated : item))
         setProducts((current) => current.map((item) => item.id === editingProduct.id ? { ...item, ...formData } : item))
         setStatusMessage('Listing updated successfully.')
