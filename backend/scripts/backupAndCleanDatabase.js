@@ -29,7 +29,7 @@ async function run() {
       throw new Error(`Expected admin ${ADMIN_EMAIL} was not found. Nothing was deleted.`);
     }
 
-    const collections = await db.listCollections({}, { nameOnly: true }).toArray();
+    const collections = (await db.listCollections({}, { nameOnly: false }).toArray())\n      .filter((collection) => collection.type === "collection" && !collection.name.startsWith("system."));
     if (collections.length === 0) {
       throw new Error("No collections were found. Stopping to avoid cleaning the wrong database.");
     }
