@@ -60,6 +60,9 @@ function AdminBookings() {
               <h3>{booking.listing?.title || 'Listing unavailable'}</h3>
               <p><strong>Customer:</strong> {booking.renter?.name || 'Unknown'} ({booking.renter?.email || 'No email'})</p>
               <p><strong>Owner:</strong> {booking.owner?.name || 'Unknown'} ({booking.owner?.email || 'No email'})</p>
+              <p><strong>Contact phone:</strong> {booking.contactPhone || 'Not provided'}</p>
+              <p><strong>Delivery address:</strong> {booking.deliveryAddress || 'Not provided'}</p>
+              {booking.notes && <p><strong>Notes:</strong> {booking.notes}</p>}
               <p><strong>Dates:</strong> {new Date(booking.startDate).toLocaleDateString()} – {new Date(booking.endDate).toLocaleDateString()}</p>
               <p><strong>Duration:</strong> {booking.totalDays} day(s)</p>
               <p><strong>Total:</strong> Rs. {booking.totalPrice}</p>
