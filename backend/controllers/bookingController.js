@@ -104,8 +104,8 @@ const createBooking = async (req, res) => {
       });
     }
 
-    // Pending requests do not reserve the item. Multiple customers can
-    // checkout and send requests; the admin approves only one overlapping request.
+    // Pending requests do not reserve stock. The listing owner decides which
+    // requests to approve, subject to the remaining stock quantity.
     const existingBooking = await Booking.findOne({
       listing: listing._id,
       status: "approved",
@@ -263,10 +263,10 @@ const updateBookingStatus = async (req, res) => {
           return;
         }
 
-        if (req.user.role !== "admin") {
+        if (booking.owner.toString() !== req.user.id) {
           responseStatus = 403;
           responseBody = {
-            message: "Only an admin can approve or reject bookings.",
+            message: "Only the store owner for this product can approve or reject this booking.",
           };
           return;
         }
@@ -507,6 +507,10 @@ const markCodPaymentReceived = async (req, res) => {
 
     if (!booking) {
       return res.status(404).json({ message: "Booking not found." });
+    }
+
+    if (booking.owner.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Only the store owner can record payment for this booking." });
     }
 
     if (booking.paymentMethod !== "cod") {
