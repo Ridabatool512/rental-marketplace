@@ -1,4 +1,3 @@
-
 import { PLACEHOLDER_IMAGE } from '../data/catalog'
 
 function RentalCard({
@@ -10,19 +9,24 @@ function RentalCard({
   onRemove,
   showOwnerActions,
 }) {
+  const unavailableLabel = Number(item.quantity ?? 1) <= 0
+    ? 'Out of stock'
+    : item.available
+      ? 'Available'
+      : 'Unavailable'
+
   return (
     <article className="rental-card">
       <div className="card-image-wrap">
         <img src={item.image || PLACEHOLDER_IMAGE} alt={item.name} loading="lazy" decoding="async" />
-        <span
-          className={item.available ? 'badge available' : 'badge unavailable'}
-        >
-          {Number(item.quantity ?? 1) <= 0 ? 'Out of Stock' : item.available ? 'Available' : 'Unavailable'}
+        <span className="catalog-category-tag">{item.category || 'Everyday finds'}</span>
+        <span className={item.available ? 'badge available' : 'badge unavailable'}>
+          {unavailableLabel}
         </span>
       </div>
 
       <div className="card-body">
-        <p className="card-category">{item.category}</p>
+        <p className="card-category">FROM THE RENTAL SHELF</p>
         <h3>{item.name}</h3>
 
         {item.storeName && (
@@ -30,8 +34,8 @@ function RentalCard({
         )}
 
         <p className="card-price">
-          Rs.{item.pricePerDay}
-          <span> / day</span>
+          Rs. {item.pricePerDay}
+          <span> / DAY</span>
         </p>
 
         <div className="card-actions">
@@ -40,7 +44,7 @@ function RentalCard({
             className="btn btn-secondary"
             onClick={() => onViewDetails(item)}
           >
-            View Details
+            View details
           </button>
 
           {!showOwnerActions && (
@@ -51,7 +55,7 @@ function RentalCard({
                 disabled={!item.available}
                 onClick={() => onAddToCart(item)}
               >
-                Add to Cart
+                Add to cart
               </button>
 
               <button
@@ -60,7 +64,7 @@ function RentalCard({
                 disabled={!item.available}
                 onClick={() => onRentNow(item)}
               >
-                Rent Now
+                Rent now
               </button>
             </>
           )}
