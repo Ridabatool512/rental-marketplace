@@ -1,92 +1,50 @@
 # Rentify — Rental Marketplace
 
-A full-stack rental marketplace that connects users with rental listings and provides tools to manage bookings, stores, reviews, and rental transactions.
+Rentify is a full-stack rental marketplace project designed to connect customers with rental listings through a web interface. The project separates the React frontend from the Node.js/Express backend and stores application data in MongoDB.
 
-## Features
+> **Project status:** Core authentication, listing, booking, and demo payment workflows are being developed. Features such as stores, reviews, and complete admin management should be considered complete only when they are verified in the current build.
 
-### User Features
-- User registration and login
-- Secure authentication using JSON Web Tokens (JWT)
-- Browse rental listings
-- Create and manage rental listings
-- Book rental items or properties
-- View and manage bookings
-- Browse stores and submit reviews
-- Ratings and reviews
-- Payment workflow integration
+## 1. Problem Statement and Solution
 
-### Admin Features
-- Separate admin authentication
-- Administrative access to booking management
-- Approve or reject booking requests
-- Manage marketplace operations
+### Problem statement
+Finding and managing rentals through informal channels can make it difficult to compare listings, keep booking information organized, and track booking status. Rental providers also need a central place to publish listings and manage requests.
 
-### Booking Workflow
-1. A user selects a rental listing and proceeds to checkout.
-2. The booking is created with a pending status.
-3. An administrator reviews the booking.
-4. The administrator approves or rejects the request.
-5. The booking status reflects the decision.
+### Proposed solution
+Rentify provides a web-based marketplace with separate user and admin authentication flows. Users can interact with rental listings and booking workflows, while the backend exposes REST API endpoints and stores application data in MongoDB.
 
-## Tech Stack
+### Main project goals
+- Centralize rental listings and booking information.
+- Provide separate authentication flows for users and administrators.
+- Use a REST API to connect the frontend and backend.
+- Store application records in MongoDB.
+- Provide a foundation for listing, booking, and payment workflow improvements.
 
-**Frontend**
-- React
-- JavaScript
-- Axios for API requests
-- CSS for styling
+## 2. Technology Stack
 
-**Backend**
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- JSON Web Tokens (JWT)
-- bcryptjs for password hashing
+| Layer | Technologies |
+|---|---|
+| Frontend | React, JavaScript, Vite |
+| API communication | Axios |
+| Backend | Node.js, Express.js |
+| Database | MongoDB, Mongoose |
+| Authentication | JSON Web Tokens (JWT) |
+| Password security | bcryptjs |
+| Development tools | npm, Git, GitHub, Nodemon |
 
-## Project Structure
+## 3. Setup and Installation
 
-```text
-rental-marketplace/
-├── Frontend/
-│   ├── src/
-│   ├── public/
-│   └── package.json
-├── backend/
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   ├── scripts/
-│   ├── server.js
-│   └── package.json
-├── .gitignore
-└── README.md
-```
-
-*The exact files and folders may vary as the project develops.*
-
-## Prerequisites
-
-Install the following before running the project:
-
-- [Node.js](https://nodejs.org/)
-- npm
-- [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas) or a local MongoDB instance
+### Prerequisites
+- Node.js and npm
 - Git
+- A MongoDB Atlas cluster or local MongoDB instance
 
-## Installation and Setup
-
-### 1. Clone the Repository
-
+### Clone the repository
 ```bash
 git clone https://github.com/Ridabatool512/rental-marketplace.git
 cd rental-marketplace
 ```
 
-### 2. Set Up the Backend
-
+### Configure and run the backend
 ```bash
 cd backend
 npm install
@@ -97,23 +55,22 @@ Create a `.env` file inside the `backend/` directory:
 ```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secure_jwt_secret
+JWT_SECRET=replace_with_a_long_random_secret
 NODE_ENV=development
 ```
 
-Replace the example values with your own configuration. Never commit your `.env` file or expose database credentials and JWT secrets.
+Use your own MongoDB connection string and a strong, private JWT secret. Never commit the `.env` file or share database credentials.
 
-Start the backend:
+Start the backend in development mode:
 
 ```bash
 npm run dev
 ```
 
-If your backend does not have a development script, check the available scripts in `backend/package.json`.
+The API is expected to run on port 5000 unless configured otherwise.
 
-### 3. Set Up the Frontend
-
-Open a second terminal from the repository root:
+### Configure and run the frontend
+Open a second terminal at the repository root:
 
 ```bash
 cd Frontend
@@ -121,67 +78,81 @@ npm install
 npm run dev
 ```
 
-Open the local URL displayed by Vite or your frontend development server.
+Open the local URL printed by Vite in your terminal.
 
-### 4. Connect the Frontend to the Backend
-
-Configure Axios to use your backend API URL.
-
-For local development, the API base URL will generally be:
+### Connect frontend and backend
+Configure the frontend's Axios base URL to point to the backend API. For local development, the base URL is typically:
 
 ```text
 http://localhost:5000/api
 ```
 
-For deployment, configure the frontend to use your deployed backend's API URL. Keep environment-specific URLs in configuration rather than hardcoding production credentials.
+If your project uses a different API base URL in its current configuration, use that value instead. For deployment, configure the frontend to use the deployed backend URL and configure CORS on the backend for the frontend's origin.
 
-## API Overview
+## 4. AI Methodology and Implementation
 
-The backend API uses the `/api` prefix.
+**AI is not currently implemented in the verified Rentify codebase.** Rentify is presently a conventional full-stack marketplace application. Its core workflows use application logic, REST API requests, database operations, and authentication rather than AI inference.
 
-| Feature | Endpoint |
+No AI model, training pipeline, retrieval-augmented generation (RAG) pipeline, or AI-powered recommendation system is claimed in this version of the project. If an AI feature is added later, document its purpose, input/output flow, evaluation approach, limitations, and privacy considerations here.
+
+## 5. AI Model Names and API Usage
+
+**Not applicable to the current implementation:** no AI model or AI provider API has been verified in this repository.
+
+The application does use a backend REST API for marketplace functionality. JWTs are used for authenticated requests, and Axios is used by the frontend to communicate with the backend. These are application/API technologies, not AI model APIs.
+
+If an AI service is integrated in a future version, add:
+- Provider and exact model name/version.
+- Feature that uses the model.
+- API endpoint and server-side integration flow.
+- Required environment variable names (never secret values).
+- Request/response format, error handling, cost controls, and data privacy measures.
+
+## 6. Product Screenshots
+
+Product screenshots have not yet been added to the repository. Add real screenshots captured from the running application in `docs/screenshots/`, then embed them below. Suggested screenshots:
+
+- User landing page or marketplace
+- Listing details
+- Login and registration
+- Booking flow and booking status
+- Admin dashboard, if available in the current build
+- Payment demo screen, if available in the current build
+
+Example Markdown to use after adding each image:
+
+```markdown
+![Marketplace page](docs/screenshots/marketplace.png)
+```
+
+Only include screenshots of features that are implemented and working in the submitted version.
+
+## 7. Team Member Contributions
+
+Update the names below to match the actual project team and confirm each contribution before submission.
+
+| Team member | Contribution |
 |---|---|
-| User registration | `POST /api/auth/register` |
-| User login | `POST /api/auth/login` |
-| Admin login | `POST /api/auth/admin/login` |
-| Current user | `GET /api/auth/me` |
-| Create booking | `POST /api/bookings` |
-| Admin booking management | `GET /api/bookings/admin/all` |
+| Rida Batool | Backend development and integration coordination; confirm the exact modules personally implemented before final submission. |
+| Backend team member 2 — add name | Assigned backend API, database, or integration tasks — replace with actual contribution. |
+| Backend team member 3 — add name | Assigned backend API, database, or integration tasks — replace with actual contribution. |
+| Frontend team member(s) — add names | React UI, pages, styling, and frontend integration — replace with each person's actual contribution. |
 
-Additional routes support listings, stores, reviews, and payments. Authentication-protected endpoints require the appropriate authorization token.
+For a team submission, replace every placeholder with the member's name and a concise description of work actually completed. Avoid claiming unverified contributions.
 
-## Deployment
+## Current Scope and Notes
 
-The project has frontend and backend deployment configurations.
-
-- **Frontend:** Render
-- **Backend:** Render
-- **Database:** MongoDB Atlas
-
-For production deployment, configure the required environment variables in your hosting dashboard and ensure that the frontend points to the deployed backend API. Do not place secrets in frontend environment variables that are exposed to browsers.
-
-## Security Notes
-
-- Passwords are hashed before storage.
-- JWT-based authentication protects authorized routes.
-- Admin and regular-user access are handled separately.
-- Environment variables are used for sensitive configuration.
-- Production deployments should use HTTPS and appropriate CORS settings.
-
-## Future Improvements
-
-- Improve the booking and checkout experience
-- Integrate and verify a production-ready payment gateway
-- Enhance admin analytics and reporting
-- Improve responsive design and accessibility
-- Add automated API and frontend tests
+- Separate user and admin login flows are part of the project design.
+- Listing and booking workflows are part of the backend scope.
+- The payment workflow is a demo/simulated workflow; do not treat it as a production payment gateway.
+- Availability of store management, reviews, and advanced admin features should be verified against the current implementation.
+- Do not commit database backups, secrets, or local environment files.
 
 ## Author
 
-**Rida Batool**
+**Rida Batool**  
+GitHub: [@Ridabatool512](https://github.com/Ridabatool512)
 
-- GitHub: [@Ridabatool512](https://github.com/Ridabatool512)
+## Repository
 
-## License
-
-No license has been specified yet. All rights are reserved unless a license is added to this repository.
+[https://github.com/Ridabatool512/rental-marketplace](https://github.com/Ridabatool512/rental-marketplace)
