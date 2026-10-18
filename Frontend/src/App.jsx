@@ -18,6 +18,7 @@ import CartPage from './components/CartPage'
 import CheckoutPage from './components/CheckoutPage'
 import AdminBookings from './components/AdminBookings'
 import MyBookings from './components/MyBookings'
+import OwnerBookings from './components/OwnerBookings'
 import api from './api/axios'
 
 
@@ -111,6 +112,7 @@ function App() {
   const [activeStoreId, setActiveStoreId] = useState(null)
   const [editingProduct, setEditingProduct] = useState(null)
   const [statusMessage, setStatusMessage] = useState('')
+  const [ownerBookingUpdates, setOwnerBookingUpdates] = useState(0)
 
   useEffect(() => {
     function handleHashChange() {
@@ -232,6 +234,37 @@ function App() {
       active = false
     }
   }, [])
+
+  useEffect(() => {
+    if (!currentUser || !sessionStorage.getItem('token')) {
+      setOwnerBookingUpdates(0)
+      return
+    }
+
+    let active = true
+    const loadOwnerUpdates = async () => {
+      try {
+        const response = await api.get('/bookings/received')
+        if (!active) return
+        const updates = (response.data.bookings || []).filter(
+          (booking) => ['approved', 'rejected'].includes(booking.status),
+        )
+        setOwnerBookingUpdates(updates.length)
+      } catch {
+        if (active) setOwnerBookingUpdates(0)
+      }
+    }
+
+    loadOwnerUpdates()
+    const intervalId = window.setInterval(loadOwnerUpdates, 30000)
+    window.addEventListener('focus', loadOwnerUpdates)
+
+    return () => {
+      active = false
+      window.clearInterval(intervalId)
+      window.removeEventListener('focus', loadOwnerUpdates)
+    }
+  }, [currentUser])
 
   const localProductsForDisplay = useMemo(
     () => productsWithStoreInfo(products, stores),
@@ -676,6 +709,7 @@ async function handlePlaceOrder(customerDetails) {
   userRole={currentUser?.role}
   onOpenBookings={() => goTo('my-bookings')}
   onOpenAdminBookings={() => goTo('admin-bookings')}
+  ownerBookingUpdates={ownerBookingUpdates}
 />
 
       {statusMessage &&
@@ -957,6 +991,10 @@ async function handlePlaceOrder(customerDetails) {
  
 {page === 'my-bookings' && (
   <MyBookings />
+)}
+
+{page === 'owner-bookings' && currentUser && (
+  <OwnerBookings />
 )}
 
 {page === 'admin-bookings' && currentUser?.role === 'admin' && (
