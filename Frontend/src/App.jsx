@@ -47,10 +47,25 @@ function mapBackendListing(listing) {
     images: listing.images || [],
     pricePerDay: listing.pricePerDay,
     available: listing.status === 'available',
-    storeName: listing.owner?.name || 'Rental owner',
-    location: listing.location || '',
-    storeId: listing.owner?._id || listing.owner || '',
+    storeName: listing.store?.name || listing.owner?.name || 'Rental owner',
+    location: listing.store?.location || listing.location || '',
+    storeId: listing.store?._id || listing.store || '',
     ownerId: listing.owner?._id || listing.owner || '',
+    storeCategory: listing.store?.category || 'General',
+  }
+}
+
+function mapBackendStore(store) {
+  return {
+    id: store._id,
+    name: store.name,
+    description: store.description || '',
+    location: store.location || '',
+    category: store.category || 'General',
+    coverImage: store.coverImage || '',
+    ownerId: store.owner?._id || store.owner || '',
+    ownerName: store.owner?.name || '',
+    backendStore: true,
   }
 }
 
@@ -67,7 +82,7 @@ function App() {
   })
 
   const [afterAuthPage, setAfterAuthPage] = useState('create-store')
-  const [stores, setStores] = useState(() => loadStores())
+  const [stores, setStores] = useState([])
   const [products, setProducts] = useState(() => loadProducts())
   const [backendListings, setBackendListings] = useState([])
   const [isLoadingListings, setIsLoadingListings] = useState(true)
@@ -109,10 +124,6 @@ function App() {
   }, [currentUser, page])
 
   useEffect(() => {
-    saveStores(stores)
-  }, [stores])
-
-  useEffect(() => {
     let active = true
 
     async function loadBackendData() {
@@ -131,6 +142,14 @@ function App() {
     }
 
     loadBackendData()
+
+    api.get('/stores')
+      .then((response) => {
+        if (active) setStores((response.data.stores || []).map(mapBackendStore))
+      })
+      .catch((error) => {
+        if (active) setStatusMessage(error.response?.data?.message || 'Could not load stores from the server.')
+      })
 
     const token = sessionStorage.getItem('token')
     if (token) {
@@ -153,10 +172,6 @@ function App() {
     }
   }, [])
 
-  useEffect(() => {
-    saveProducts(products)
-  }, [products])
-
   const localProductsForDisplay = useMemo(
     () => productsWithStoreInfo(products, stores),
     [products, stores],
@@ -173,7 +188,7 @@ function App() {
   const activeStore =
     stores.find((store) => store.id === activeStoreId) || null
 
-  const storeProducts = localProductsForDisplay.filter(
+  const storeProducts = backendListings.filter(
     (item) => item.storeId === activeStoreId,
   )
 
@@ -287,46 +302,45 @@ function App() {
     goTo('browse')
   }
 
-  function handleCreateStore(formData) {
+  async function handleCreateStore(formData) {
     if (!currentUser) {
       setAfterAuthPage('create-store')
       setPage('sign-up')
       return
     }
 
-    const newStore = {
-      id: createId('store'),
-      ...formData,
-      ownerId: currentUser.id,
+    try {
+      const response = await api.post('/stores', formData)
+      const newStore = mapBackendStore(response.data.store)
+      setStores((current) => [newStore, ...current])
+      setActiveStoreId(newStore.id)
+      setEditingProduct(null)
+      setStatusMessage(newStore.name + ' was created successfully.')
+      setPage('dashboard')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch (error) {
+      window.alert(error.response?.data?.message || 'Could not create your store.')
     }
-
-    setStores((current) => [...current, newStore])
-    setActiveStoreId(newStore.id)
-    setEditingProduct(null)
-    setStatusMessage(`${newStore.name} was created successfully.`)
-    setPage('dashboard')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  function handleUpdateStore(formData) {
+  async function handleUpdateStore(formData) {
     if (!activeStore || activeStore.ownerId !== currentUser?.id) {
       goTo('my-stores')
       return
     }
 
-    setStores((current) =>
-      current.map((store) =>
-        store.id === activeStoreId
-          ? { ...store, ...formData }
-          : store,
-      ),
-    )
-
-    setStatusMessage('Store details were updated.')
-    goTo('dashboard')
+    try {
+      const response = await api.put('/stores/' + activeStore.id, formData)
+      const updatedStore = mapBackendStore(response.data.store)
+      setStores((current) => current.map((store) => store.id === updatedStore.id ? updatedStore : store))
+      setStatusMessage('Store details were updated.')
+      goTo('dashboard')
+    } catch (error) {
+      window.alert(error.response?.data?.message || 'Could not update this store.')
+    }
   }
 
-  function handleDeleteStore() {
+  async function handleDeleteStore() {
     if (!activeStore || activeStore.ownerId !== currentUser?.id) {
       goTo('my-stores')
       return
@@ -338,21 +352,18 @@ function App() {
 
     if (!confirmed) return
 
-    setStores((current) =>
-      current.filter((store) => store.id !== activeStore.id),
-    )
-
-    setProducts((current) =>
-      current.filter((item) => item.storeId !== activeStore.id),
-    )
-
-    setSavedRentals((current) =>
-      current.filter((item) => item.storeId !== activeStore.id),
-    )
-
-    setActiveStoreId(null)
-    setStatusMessage('The store and its products were removed.')
-    goTo('my-stores')
+    try {
+      await api.delete('/stores/' + activeStore.id)
+      setStores((current) => current.filter((store) => store.id !== activeStore.id))
+      setBackendListings((current) => current.filter((item) => item.storeId !== activeStore.id))
+      setProducts((current) => current.filter((item) => item.storeId !== activeStore.id))
+      setSavedRentals((current) => current.filter((item) => item.storeId !== activeStore.id))
+      setActiveStoreId(null)
+      setStatusMessage('The store and its products were removed.')
+      goTo('my-stores')
+    } catch (error) {
+      window.alert(error.response?.data?.message || 'Could not delete this store.')
+    }
   }
 
   async function handleSaveProduct(formData) {
@@ -370,6 +381,7 @@ function App() {
       pricePerDay: Number(formData.pricePerDay),
       location: activeStore.location,
       status: formData.available ? 'available' : 'unavailable',
+      storeId: activeStore.id,
     }
 
     try {
@@ -684,8 +696,7 @@ async function handlePlaceOrder(customerDetails) {
           </div>
 
           <p className="form-intro">
-            Store details are saved in this browser for the demo. They are not
-            sent to a shared server yet.
+            Your store will be saved to your account and shared with the marketplace.
           </p>
 
           <StoreForm
