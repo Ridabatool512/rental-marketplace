@@ -69,8 +69,8 @@ function MyBookings() {
               <p><strong>Total: Rs. {booking.totalPrice}</strong></p>
               <p><strong>Request status:</strong> {booking.status}</p>
               <p><strong>Payment method:</strong> {booking.paymentMethod === 'online' ? 'Online payment' : 'Cash on Delivery (COD)'}</p>
-              <p><strong>Payment status:</strong> {booking.paymentMethod === 'cod' ? 'Due on delivery' : (booking.paymentStatus || 'unpaid')}</p>
-              {booking.status === 'approved' && booking.paymentMethod === 'online' && ['unpaid', 'failed'].includes(booking.paymentStatus) && (
+              <p><strong>Payment status:</strong> {booking.paymentMethod === 'cod' ? (booking.paymentStatus === 'paid' ? 'Paid (COD collected)' : 'Due on delivery') : (booking.paymentStatus || 'unpaid')}</p>
+              {booking.status === 'approved' && booking.paymentMethod === 'online' && booking.paymentStatus === 'unpaid' && (
                 <div className="card-actions">
                   <button type="button" className="btn btn-primary" disabled={payingId === booking._id} onClick={() => payOnline(booking)}>
                     {payingId === booking._id ? 'Processing...' : 'Pay Online (Demo)'}
