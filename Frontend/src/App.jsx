@@ -58,9 +58,9 @@ function App() {
   const [page, setPage] = useState('home')
 
   const [currentUser, setCurrentUser] = useState(() => {
-    if (!localStorage.getItem('token')) return null
+    if (!sessionStorage.getItem('token')) return null
     try {
-      return JSON.parse(localStorage.getItem('rentifyUser')) || null
+      return JSON.parse(sessionStorage.getItem('rentifyUser')) || null
     } catch {
       return null
     }
@@ -106,18 +106,18 @@ function App() {
 
     loadBackendData()
 
-    const token = localStorage.getItem('token')
+    const token = sessionStorage.getItem('token')
     if (token) {
       api.get('/auth/me')
         .then((response) => {
           if (!active) return
           setCurrentUser(response.data.user)
-          localStorage.setItem('rentifyUser', JSON.stringify(response.data.user))
+          sessionStorage.setItem('rentifyUser', JSON.stringify(response.data.user))
         })
         .catch(() => {
           if (!active) return
-          localStorage.removeItem('token')
-          localStorage.removeItem('rentifyUser')
+          sessionStorage.removeItem('token')
+          sessionStorage.removeItem('rentifyUser')
           setCurrentUser(null)
         })
     }
@@ -170,8 +170,8 @@ function App() {
   }
 
   function handleSignOut() {
-    localStorage.removeItem('token')
-    localStorage.removeItem('rentifyUser')
+    sessionStorage.removeItem('token')
+    sessionStorage.removeItem('rentifyUser')
     setCurrentUser(null)
     setActiveStoreId(null)
     setStatusMessage('You have signed out.')
@@ -185,8 +185,8 @@ function App() {
         email: formData.email,
         password: formData.password,
       })
-      localStorage.setItem('token', response.data.token)
-      localStorage.setItem('rentifyUser', JSON.stringify(response.data.user))
+      sessionStorage.setItem('token', response.data.token)
+      sessionStorage.setItem('rentifyUser', JSON.stringify(response.data.user))
       setCurrentUser(response.data.user)
       setStatusMessage('Account created successfully.')
       setPage(afterAuthPage)
@@ -201,8 +201,8 @@ function App() {
         email: formData.email,
         password: formData.password,
       })
-      localStorage.setItem('token', response.data.token)
-      localStorage.setItem('rentifyUser', JSON.stringify(response.data.user))
+      sessionStorage.setItem('token', response.data.token)
+      sessionStorage.setItem('rentifyUser', JSON.stringify(response.data.user))
       setCurrentUser(response.data.user)
       setStatusMessage('Signed in successfully.')
       setPage(afterAuthPage)
@@ -458,7 +458,7 @@ function handleRemoveFromCart(itemId) {
 
 
 async function handlePlaceOrder(customerDetails) {
-  if (!currentUser || !localStorage.getItem('token')) {
+  if (!currentUser || !sessionStorage.getItem('token')) {
     setAfterAuthPage('checkout')
     setPage('sign-in')
     setStatusMessage('Please sign in before sending a rental request.')
@@ -485,6 +485,7 @@ async function handlePlaceOrder(customerDetails) {
         phone: customerDetails.phone,
         address: customerDetails.address,
         notes: customerDetails.notes,
+        paymentMethod: customerDetails.paymentMethod,
       })
       createdBookings.push(response.data.booking)
     }
