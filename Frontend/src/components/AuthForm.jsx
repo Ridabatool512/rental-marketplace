@@ -1,5 +1,5 @@
 
-function AuthForm({ mode, onSubmit, onSwitch, onCancel }) {
+function AuthForm({ mode, onSubmit, onSwitch, onCancel, isAdminLogin = false }) {
   const isSignUp = mode === 'sign-up'
 
  
@@ -51,7 +51,7 @@ function handleSubmit(event) {
             <p>
               {isSignUp
                 ? 'Discover a smarter way to rent, share, and manage the things you love.'
-                : 'Your rentals, your stores, and your next great find are waiting for you.'}
+                : (isAdminLogin ? 'Sign in with the authorized administrator account to manage rental requests.' : 'Your rentals, your stores, and your next great find are waiting for you.')}
             </p>
 
             <div className="auth-benefits">
@@ -94,17 +94,17 @@ function handleSubmit(event) {
             </div>
 
             <p className="auth-eyebrow">
-              {isSignUp ? 'GET STARTED FOR FREE' : 'WELCOME BACK'}
+              {isSignUp ? 'GET STARTED FOR FREE' : (isAdminLogin ? 'SECURE ADMIN ACCESS' : 'WELCOME BACK')}
             </p>
 
             <h2>
-              {isSignUp ? 'Create your account' : 'Sign in to Rentify'}
+              {isSignUp ? 'Create your account' : (isAdminLogin ? 'Admin sign in' : 'Sign in to Rentify')}
             </h2>
 
             <p className="auth-description">
               {isSignUp
                 ? 'Join Rentify and start exploring a better way to rent.'
-                : 'Enter your details to continue to your account.'}
+                : (isAdminLogin ? 'Only an existing administrator account can sign in here. Customer accounts cannot access the admin panel.' : 'Enter your details to continue to your account.')}
             </p>
 
             <form className="auth-form" onSubmit={handleSubmit}>
@@ -161,7 +161,7 @@ function handleSubmit(event) {
 
 
               <button className="auth-submit" type="submit">
-                {isSignUp ? 'Create account' : 'Sign in'}
+                {isSignUp ? 'Create account' : (isAdminLogin ? 'Sign in as admin' : 'Sign in')}
                 <span>→</span>
               </button>
             </form>
