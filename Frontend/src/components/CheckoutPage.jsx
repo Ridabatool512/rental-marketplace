@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function CheckoutPage({ items, onPlaceOrder, onBackToCart, onContinueShopping }) {
+function CheckoutPage({ currentUser, items, onPlaceOrder, onBackToCart, onContinueShopping }) {
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('cod')
@@ -96,12 +96,12 @@ function CheckoutPage({ items, onPlaceOrder, onBackToCart, onContinueShopping })
 
         <label>
           Full name
-          <input type="text" name="customerName" required autoComplete="name" />
+          <input type="text" name="customerName" defaultValue={currentUser?.name || ''} readOnly required autoComplete="name" />
         </label>
 
         <label>
           Email address
-          <input type="email" name="email" required autoComplete="email" />
+          <input type="email" name="email" defaultValue={currentUser?.email || ''} readOnly required autoComplete="email" />
         </label>
 
         <label>
