@@ -16,6 +16,8 @@ import StoreDashboard from './components/StoreDashboard'
 import StorePage from './components/StorePage'
 import CartPage from './components/CartPage'
 import CheckoutPage from './components/CheckoutPage'
+import AdminBookings from './components/AdminBookings'
+import api from './api/axios'
 
 
 import {
@@ -31,10 +33,31 @@ import {
 } from './data/storage'
 import './App.css'
 
+function mapBackendListing(listing) {
+  return {
+    id: listing._id,
+    backendListing: true,
+    name: listing.title,
+    description: listing.description,
+    category: listing.category
+      ? listing.category.replace(/\\b\\w/g, (letter) => letter.toUpperCase())
+      : 'Other',
+    image: listing.images?.[0] || '',
+    images: listing.images || [],
+    pricePerDay: listing.pricePerDay,
+    available: listing.status === 'available',
+    storeName: listing.owner?.name || 'Rental owner',
+    location: listing.location || '',
+    storeId: listing.owner?._id || listing.owner || '',
+    ownerId: listing.owner?._id || listing.owner || '',
+  }
+}
+
 function App() {
   const [page, setPage] = useState('home')
 
   const [currentUser, setCurrentUser] = useState(() => {
+    if (!localStorage.getItem('token')) return null
     try {
       return JSON.parse(localStorage.getItem('rentifyUser')) || null
     } catch {
@@ -45,6 +68,8 @@ function App() {
   const [afterAuthPage, setAfterAuthPage] = useState('create-store')
   const [stores, setStores] = useState(() => loadStores())
   const [products, setProducts] = useState(() => loadProducts())
+  const [backendListings, setBackendListings] = useState([])
+  const [isLoadingListings, setIsLoadingListings] = useState(true)
   const [searchText, setSearchText] = useState('')
   const [category, setCategory] = useState('All')
   const [selectedItem, setSelectedItem] = useState(null)
@@ -61,13 +86,57 @@ function App() {
   }, [stores])
 
   useEffect(() => {
+    let active = true
+
+    async function loadBackendData() {
+      try {
+        const response = await api.get('/listings')
+        if (active) {
+          setBackendListings((response.data.listings || []).map(mapBackendListing))
+        }
+      } catch (error) {
+        if (active) {
+          setStatusMessage(error.response?.data?.message || 'Could not load rentals from the server.')
+        }
+      } finally {
+        if (active) setIsLoadingListings(false)
+      }
+    }
+
+    loadBackendData()
+
+    const token = localStorage.getItem('token')
+    if (token) {
+      api.get('/auth/me')
+        .then((response) => {
+          if (!active) return
+          setCurrentUser(response.data.user)
+          localStorage.setItem('rentifyUser', JSON.stringify(response.data.user))
+        })
+        .catch(() => {
+          if (!active) return
+          localStorage.removeItem('token')
+          localStorage.removeItem('rentifyUser')
+          setCurrentUser(null)
+        })
+    }
+
+    return () => {
+      active = false
+    }
+  }, [])
+
+  useEffect(() => {
     saveProducts(products)
   }, [products])
 
-  const productsForDisplay = useMemo(
+  const localProductsForDisplay = useMemo(
     () => productsWithStoreInfo(products, stores),
     [products, stores],
   )
+
+  // The public marketplace uses MongoDB listings returned by the backend.
+  const productsForDisplay = backendListings
 
   const visibleProducts = useMemo(
     () => filterProducts(productsForDisplay, searchText, category),
@@ -77,7 +146,7 @@ function App() {
   const activeStore =
     stores.find((store) => store.id === activeStoreId) || null
 
-  const storeProducts = productsForDisplay.filter(
+  const storeProducts = localProductsForDisplay.filter(
     (item) => item.storeId === activeStoreId,
   )
 
@@ -100,6 +169,7 @@ function App() {
   }
 
   function handleSignOut() {
+    localStorage.removeItem('token')
     localStorage.removeItem('rentifyUser')
     setCurrentUser(null)
     setActiveStoreId(null)
@@ -107,82 +177,37 @@ function App() {
     setPage('home')
   }
 
-  function handleSignUp(formData) {
-    let accounts
-
+  async function handleSignUp(formData) {
     try {
-      accounts = JSON.parse(
-        localStorage.getItem('rentifyAccounts') || '[]',
-      )
-    } catch {
-      accounts = []
+      const response = await api.post('/auth/register', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      })
+      localStorage.setItem('token', response.data.token)
+      localStorage.setItem('rentifyUser', JSON.stringify(response.data.user))
+      setCurrentUser(response.data.user)
+      setStatusMessage('Account created successfully.')
+      setPage(afterAuthPage)
+    } catch (error) {
+      window.alert(error.response?.data?.message || 'Could not create your account. Please try again.')
     }
-
-    if (accounts.some((account) => account.email === formData.email)) {
-      window.alert('This email already has an account. Please sign in.')
-      setAfterAuthPage('create-store')
-      setPage('sign-in')
-      return
-    }
-
-    const account = {
-      id: createId('user'),
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-    }
-
-    const user = {
-      id: account.id,
-      name: account.name,
-      email: account.email,
-    }
-
-    localStorage.setItem(
-      'rentifyAccounts',
-      JSON.stringify([...accounts, account]),
-    )
-    localStorage.setItem('rentifyUser', JSON.stringify(user))
-
-    setCurrentUser(user)
-    setStatusMessage('Account created successfully.')
-    setPage(afterAuthPage)
   }
 
-  function handleSignIn(formData) {
-    let accounts
-
+  async function handleSignIn(formData) {
     try {
-      accounts = JSON.parse(
-        localStorage.getItem('rentifyAccounts') || '[]',
-      )
-    } catch {
-      accounts = []
+      const response = await api.post('/auth/login', {
+        email: formData.email,
+        password: formData.password,
+      })
+      localStorage.setItem('token', response.data.token)
+      localStorage.setItem('rentifyUser', JSON.stringify(response.data.user))
+      setCurrentUser(response.data.user)
+      setStatusMessage('Signed in successfully.')
+      setPage(afterAuthPage)
+    } catch (error) {
+      window.alert(error.response?.data?.message || 'Email or password is incorrect.')
     }
-
-    const account = accounts.find(
-      (item) =>
-        item.email === formData.email &&
-        item.password === formData.password,
-    )
-
-    if (!account) {
-      window.alert(
-        'Email or password is incorrect. Please try again or sign up.',
-      )
-      return
-    }
-
-    const user = {
-      id: account.id,
-      name: account.name,
-      email: account.email,
-    }
-
-    localStorage.setItem('rentifyUser', JSON.stringify(user))
-    setCurrentUser(user)
-    setStatusMessage('Signed in successfully.')
-    setPage(afterAuthPage)
   }
 
   function openDashboard(storeId) {
@@ -283,36 +308,49 @@ function App() {
     goTo('my-stores')
   }
 
-  function handleSaveProduct(formData) {
+  async function handleSaveProduct(formData) {
     if (!activeStore || activeStore.ownerId !== currentUser?.id) {
       goTo('my-stores')
       return
     }
 
-    if (editingProduct) {
-      setProducts((current) =>
-        current.map((item) =>
-          item.id === editingProduct.id &&
-          item.storeId === activeStoreId
-            ? { ...item, ...formData }
-            : item,
-        ),
-      )
-
-      setStatusMessage('Product details were updated.')
-    } else {
-      const newProduct = {
-        id: createId('product'),
-        storeId: activeStoreId,
-        ...formData,
-      }
-
-      setProducts((current) => [...current, newProduct])
-      setStatusMessage('Product added to your store and the marketplace.')
+    const listingData = {
+      title: formData.name,
+      description: formData.description,
+      category: formData.category,
+      images: formData.images || (formData.image ? [formData.image] : []),
+      condition: 'good',
+      pricePerDay: Number(formData.pricePerDay),
+      location: activeStore.location,
+      status: formData.available ? 'available' : 'unavailable',
     }
 
-    setEditingProduct(null)
-    goTo('dashboard')
+    try {
+      if (editingProduct?.backendListing) {
+        const response = await api.put(`/listings/${editingProduct.id}`, listingData)
+        const updated = mapBackendListing(response.data.listing)
+        setBackendListings((current) => current.map((item) => item.id === updated.id ? updated : item))
+        setProducts((current) => current.map((item) => item.id === editingProduct.id ? { ...item, ...formData } : item))
+        setStatusMessage('Listing updated successfully.')
+      } else {
+        const response = await api.post('/listings', listingData)
+        const created = mapBackendListing(response.data.listing)
+        setBackendListings((current) => [created, ...current])
+        const localProduct = {
+          id: created.id,
+          storeId: activeStoreId,
+          ...formData,
+          backendListing: true,
+        }
+        setProducts((current) => [...current, localProduct])
+        setStatusMessage('Listing saved to the marketplace.')
+      }
+
+      setEditingProduct(null)
+      goTo('dashboard')
+    } catch (error) {
+      window.alert(error.response?.data?.message || 'Could not save the listing. Please check that you are signed in.')
+    }
   }
 
   function handleRemoveProduct(item) {
@@ -330,14 +368,21 @@ function App() {
     )
     
     if (!confirmed) return
-    setProducts((current) =>
-      current.filter((product) => product.id !== item.id),
-    )
+    if (item.backendListing) {
+      api.delete(`/listings/${item.id}`)
+        .then(() => {
+          setBackendListings((current) => current.filter((product) => product.id !== item.id))
+          setProducts((current) => current.filter((product) => product.id !== item.id))
+          setSavedRentals((current) => current.filter((product) => product.id !== item.id))
+          setSelectedItem(null)
+          setStatusMessage(`${item.name} was removed.`)
+        })
+        .catch((error) => window.alert(error.response?.data?.message || 'Could not delete this listing.'))
+      return
+    }
 
-    setSavedRentals((current) =>
-      current.filter((product) => product.id !== item.id),
-    )
-
+    setProducts((current) => current.filter((product) => product.id !== item.id))
+    setSavedRentals((current) => current.filter((product) => product.id !== item.id))
     setSelectedItem(null)
     setStatusMessage(`${item.name} was removed.`)
   }
@@ -411,30 +456,43 @@ function handleRemoveFromCart(itemId) {
 }
 
 
-function handlePlaceOrder(customerDetails) {
-  const order = {
-    id: createId(),
-    customer: customerDetails,
-    items: checkoutItems.map((item) => ({ ...item })),
-    total: checkoutItems.reduce(
-      (sum, item) => sum + item.pricePerDay * item.days,
-      0
-    ),
-    createdAt: new Date().toISOString(),
+async function handlePlaceOrder(customerDetails) {
+  if (!currentUser || !localStorage.getItem('token')) {
+    setAfterAuthPage('checkout')
+    setPage('sign-in')
+    setStatusMessage('Please sign in before sending a rental request.')
+    return
   }
 
-  setOrders((current) => [...current, order])
-  setCartItems((current) =>
-    current.filter(
-      (cartItem) =>
-        !checkoutItems.some((item) => item.id === cartItem.id)
-    )
-  )
-  setCheckoutItems([])
-  setStatusMessage(
-    `Order placed successfully! Order ID: ${order.id}`
-  )
-  goTo('home')
+  const startDate = customerDetails.startDate
+  const endDate = customerDetails.endDate
+  if (!startDate || !endDate || endDate <= startDate) {
+    window.alert('Please choose a valid rental start and end date.')
+    return
+  }
+
+  try {
+    const createdBookings = []
+    for (const item of checkoutItems) {
+      if (!item.backendListing) {
+        throw new Error(`"${item.name}" is not a server listing yet. Please select a listing from the marketplace.`)
+      }
+      const response = await api.post('/bookings', {
+        listingId: item.id,
+        startDate,
+        endDate,
+      })
+      createdBookings.push(response.data.booking)
+    }
+
+    const itemIds = new Set(checkoutItems.map((item) => item.id))
+    setCartItems((current) => current.filter((item) => !itemIds.has(item.id)))
+    setCheckoutItems([])
+    setStatusMessage(`Submitted ${createdBookings.length} rental request(s). Status: pending admin approval.`)
+    goTo('my-bookings')
+  } catch (error) {
+    window.alert(error.response?.data?.message || error.message || 'Could not submit the rental request.')
+  }
 }
 
 
@@ -452,6 +510,9 @@ function handlePlaceOrder(customerDetails) {
   onSignOut={handleSignOut}
   cartCount={cartItems.length}
   onOpenCart={handleOpenCart}
+  userRole={currentUser?.role}
+  onOpenBookings={() => goTo('my-bookings')}
+  onOpenAdminBookings={() => goTo('admin-bookings')}
 />
 
       {statusMessage &&
@@ -486,16 +547,8 @@ function handlePlaceOrder(customerDetails) {
             <RentalGrid
               items={visibleProducts}
               onViewDetails={setSelectedItem}
-              emptyTitle={
-                products.length === 0
-                  ? 'No products yet'
-                  : 'No products match that search'
-              }
-              emptyText={
-                products.length === 0
-                  ? 'When store owners add items, they will show up here.'
-                  : 'Try a different name or choose another category.'
-              }
+              emptyTitle={isLoadingListings ? 'Loading rentals...' : 'No server listings yet'}
+              emptyText={isLoadingListings ? 'Getting available rentals from the server.' : 'Sign in and open your store to add the first rental listing.'}
               emptyActionLabel="Open Your Store"
               onEmptyAction={
                 products.length === 0
@@ -539,16 +592,8 @@ function handlePlaceOrder(customerDetails) {
             onViewDetails={setSelectedItem}
             onAddToCart={handleAddToCart}
             onRentNow={handleRentNow}
-            emptyTitle={
-              products.length === 0
-                ? 'No products yet'
-                : 'No products match that search'
-            }
-            emptyText={
-              products.length === 0
-                ? 'Open a store and add your first rental item.'
-                : 'Try a different name or choose another category.'
-            }
+            emptyTitle={isLoadingListings ? 'Loading rentals...' : 'No server listings yet'}
+            emptyText={isLoadingListings ? 'Getting available rentals from the server.' : 'Sign in and open your store to add the first rental listing.'}
             emptyActionLabel="Open Your Store"
             onEmptyAction={
               products.length === 0
@@ -732,6 +777,24 @@ function handlePlaceOrder(customerDetails) {
   />
 )}
  
+{page === 'my-bookings' && (
+  <main className="page">
+    <div className="section-heading">
+      <p className="eyebrow">Your account</p>
+      <h2>My Rental Requests</h2>
+    </div>
+    <button type="button" className="btn btn-primary" onClick={() => api.get('/bookings/my').then((response) => {
+      const rows = response.data.bookings || []
+      window.alert(rows.length ? rows.map((booking) => `${booking.listing?.title || 'Rental'} — ${booking.status} — Rs.${booking.totalPrice}`).join('\\n') : 'You have no rental requests yet.')
+    }).catch((error) => window.alert(error.response?.data?.message || 'Could not load your rental requests.'))}>Load My Requests</button>
+    <p>Your rental requests are saved on the server. Pending requests need admin approval.</p>
+  </main>
+)}
+
+{page === 'admin-bookings' && currentUser?.role === 'admin' && (
+  <AdminBookings />
+)}
+
 {page === 'checkout' && (
   <CheckoutPage
     items={checkoutItems}
