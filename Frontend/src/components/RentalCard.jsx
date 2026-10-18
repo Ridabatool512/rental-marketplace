@@ -17,7 +17,7 @@ function RentalCard({
         <span
           className={item.available ? 'badge available' : 'badge unavailable'}
         >
-          {item.available ? 'Available' : 'Unavailable'}
+          {Number(item.quantity ?? 1) <= 0 ? 'Out of Stock' : item.available ? 'Available' : 'Unavailable'}
         </span>
       </div>
 
