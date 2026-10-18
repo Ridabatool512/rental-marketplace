@@ -5,7 +5,6 @@ function AdminBookings() {
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [workingId, setWorkingId] = useState('')
 
   const loadBookings = useCallback(async () => {
     setLoading(true)
@@ -24,25 +23,13 @@ function AdminBookings() {
     loadBookings()
   }, [loadBookings])
 
-  async function updateStatus(id, status) {
-    setWorkingId(id)
-    setError('')
-    try {
-      await api.patch(`/bookings/${id}/status`, { status })
-      await loadBookings()
-    } catch (requestError) {
-      setError(requestError.response?.data?.message || 'Could not update this booking.')
-    } finally {
-      setWorkingId('')
-    }
-  }
 
   return (
     <main className="page">
       <div className="section-heading">
         <p className="eyebrow">Administration</p>
         <h2>Rental Booking Requests</h2>
-        <p>Review pending requests and approve or reject them.</p>
+        <p>View rental requests across the platform. Store owners manage approval and payment collection for their own products.</p>
       </div>
 
       <button type="button" className="btn btn-secondary" onClick={loadBookings} disabled={loading}>
@@ -69,39 +56,7 @@ function AdminBookings() {
               <p><strong>Payment method:</strong> {booking.paymentMethod === 'online' ? 'Online payment' : 'Cash on Delivery (COD)'}</p>
               <p><strong>Payment status:</strong> {booking.paymentMethod === 'cod' ? (booking.paymentStatus === 'paid' ? 'Paid (COD collected)' : 'Due on delivery') : (booking.paymentStatus || 'unpaid')}</p>
               <p><strong>Status:</strong> {booking.status}</p>
-              {booking.status === 'pending' && (
-                <div className="card-actions">
-                  <button type="button" className="btn btn-primary" disabled={workingId === booking._id} onClick={() => updateStatus(booking._id, 'approved')}>
-                    {workingId === booking._id ? 'Updating...' : 'Approve'}
-                  </button>
-                  <button type="button" className="btn btn-danger" disabled={workingId === booking._id} onClick={() => updateStatus(booking._id, 'rejected')}>
-                    Reject
-                  </button>
-                </div>
-              )}
-              {booking.status === 'approved' && booking.paymentMethod === 'cod' && booking.paymentStatus !== 'paid' && (
-                <div className="card-actions">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    disabled={workingId === booking._id}
-                    onClick={async () => {
-                      setWorkingId(booking._id)
-                      setError('')
-                      try {
-                        await api.patch(`/bookings/${booking._id}/cod-payment`)
-                        await loadBookings()
-                      } catch (requestError) {
-                        setError(requestError.response?.data?.message || 'Could not record COD payment.')
-                      } finally {
-                        setWorkingId('')
-                      }
-                    }}
-                  >
-                    {workingId === booking._id ? 'Updating...' : 'Mark COD as Collected'}
-                  </button>
-                </div>
-              )}
+}
             </div>
           </article>
         ))}
