@@ -128,7 +128,7 @@ function App() {
 
     async function loadBackendData() {
       try {
-        const response = await api.get('/listings')
+        const response = await api.get('/listings?limit=50')
         if (active) {
           setBackendListings((response.data.listings || []).map(mapBackendListing))
         }
@@ -142,6 +142,24 @@ function App() {
     }
 
     loadBackendData()
+
+    // Load all of the signed-in owner's listings, including unavailable ones,
+    // so the store dashboard can manage the complete inventory.
+    if (sessionStorage.getItem('token')) {
+      api.get('/listings/my')
+        .then((response) => {
+          if (!active) return
+          const ownedListings = (response.data.listings || []).map(mapBackendListing)
+          setBackendListings((current) => {
+            const merged = new Map(current.map((listing) => [listing.id, listing]))
+            ownedListings.forEach((listing) => merged.set(listing.id, listing))
+            return Array.from(merged.values())
+          })
+        })
+        .catch((error) => {
+          if (active) setStatusMessage(error.response?.data?.message || 'Could not load your store inventory.')
+        })
+    }
 
     api.get('/stores')
       .then((response) => {
