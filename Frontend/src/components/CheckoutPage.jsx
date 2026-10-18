@@ -95,7 +95,9 @@ function CheckoutPage({
             <input
               type="date"
               name="endDate"
-              min={startDate || new Date().toISOString().slice(0, 10)}
+              min={startDate
+                ? new Date(new Date(`${startDate}T00:00:00`).getTime() + 86400000).toISOString().slice(0, 10)
+                : new Date().toISOString().slice(0, 10)}
               value={endDate}
               onChange={(event) => setEndDate(event.target.value)}
               required
