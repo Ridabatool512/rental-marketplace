@@ -69,6 +69,17 @@ const listingSchema = new mongoose.Schema(
       index: true,
     },
 
+    quantity: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 1,
+      validate: {
+        validator: Number.isInteger,
+        message: "Quantity must be a whole number.",
+      },
+    },
+
     status: {
       type: String,
       enum: ["available", "unavailable", "rented"],
