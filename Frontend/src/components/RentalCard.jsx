@@ -13,7 +13,7 @@ function RentalCard({
   return (
     <article className="rental-card">
       <div className="card-image-wrap">
-        <img src={item.image || PLACEHOLDER_IMAGE} alt={item.name} />
+        <img src={item.image || PLACEHOLDER_IMAGE} alt={item.name} loading="lazy" decoding="async" />
         <span
           className={item.available ? 'badge available' : 'badge unavailable'}
         >
