@@ -12,56 +12,57 @@ function Hero({
   }
 
   const categories = [
-    { label: 'Electronics', value: 'Electronics', icon: '↗' },
-    { label: 'Tools', value: 'Tools', icon: '⌁' },
-    { label: 'Home essentials', value: 'Home Essentials', icon: '⌂' },
-    { label: 'Vehicles', value: 'Vehicles', icon: '＋' },
+    { label: 'Electronics', value: 'Electronics' },
+    { label: 'Tools', value: 'Tools' },
+    { label: 'Home essentials', value: 'Home Essentials' },
+    { label: 'Vehicles', value: 'Vehicles' },
   ]
 
   return (
     <section className="hero hero-human" aria-labelledby="hero-title">
       <div className="human-hero-inner">
         <div className="human-hero-copy">
-          <p className="human-eyebrow"><span /> GOOD THINGS ARE BETTER SHARED</p>
-          <h1 id="hero-title">Why buy it if you only need it <em>for a while?</em></h1>
+          <p className="human-eyebrow"><span /> A BORROWING MARKETPLACE · EST. 2024</p>
+          <h1 id="hero-title">Make room for <em>more.</em></h1>
           <p className="human-hero-description">
-            From the camera for your next big idea to the tools for a weekend project,
-            find useful things nearby and rent them for as long as you need.
+            From everyday essentials to once-in-a-while adventures, find what you need
+            without buying what you don't.
           </p>
 
           <form className="human-search" onSubmit={handleSubmit} role="search">
-            <span className="human-search-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
-                <circle cx="10.8" cy="10.8" r="6.3" />
-                <path d="m15.5 15.5 4.2 4.2" />
-              </svg>
-            </span>
-            <label className="sr-only" htmlFor="rental-search">Search rental items</label>
-            <input
-              id="rental-search"
-              type="search"
-              placeholder="What do you need to rent?"
-              value={searchText}
-              onChange={(event) => onSearchChange(event.target.value)}
-            />
-            <button type="submit">Search</button>
+            <label className="human-search-label" htmlFor="rental-search">WHAT DO YOU NEED?</label>
+            <div className="human-search-control">
+              <span className="human-search-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <circle cx="10.8" cy="10.8" r="6.3" />
+                  <path d="m15.5 15.5 4.2 4.2" />
+                </svg>
+              </span>
+              <input
+                id="rental-search"
+                type="search"
+                placeholder="Try a camera, drill, or camping gear"
+                value={searchText}
+                onChange={(event) => onSearchChange(event.target.value)}
+              />
+              <button type="submit">Search <span aria-hidden="true">↗</span></button>
+            </div>
           </form>
 
           <div className="human-hero-actions">
             <button type="button" className="human-primary-action" onClick={onBrowse}>
-              Explore Rentals <span aria-hidden="true">↗</span>
+              Explore rentals <span aria-hidden="true">↗</span>
             </button>
             <button type="button" className="human-secondary-action" onClick={onOpenStore}>
-              Have something to share? <strong>List an Item</strong>
+              Have something to share? <strong>List your item</strong>
             </button>
           </div>
 
           <div className="human-category-area">
-            <p>Start with what you need</p>
+            <p className="human-category-heading">A GOOD PLACE TO START</p>
             <div className="human-category-list">
               {categories.map((item) => (
                 <button key={item.value} type="button" onClick={() => onSelectCategory(item.value)}>
-                  <span aria-hidden="true">{item.icon}</span>
                   {item.label}
                 </button>
               ))}
@@ -77,10 +78,10 @@ function Hero({
             decoding="async"
           />
           <div className="human-photo-caption">
-            <span>FOR THE THINGS YOU DO</span>
-            <p>Big plans. One-off projects. Everyday life.</p>
+            <span>FIG. 01 — MADE FOR THE MOMENT</span>
+            <p>Big plans. One good find.</p>
           </div>
-          <span className="human-photo-index" aria-hidden="true">01 / FIND YOUR NEXT THING</span>
+          <span className="human-photo-index" aria-hidden="true">BORROW WELL · PASS IT ON</span>
         </div>
       </div>
       <div className="human-hero-bottom" aria-hidden="true">
