@@ -3,8 +3,6 @@ const mongoose = require("mongoose");
 const Booking = require("../models/Booking");
 const Listing = require("../models/Listing");
 
-const ACTIVE_STATUSES = ["pending", "approved"];
-
 const parseDate = (value) => {
   if (
     typeof value !== "string" ||
@@ -84,16 +82,18 @@ const createBooking = async (req, res) => {
       });
     }
 
+    // Pending requests do not reserve the item. Multiple customers can
+    // checkout and send requests; the admin approves only one overlapping request.
     const existingBooking = await Booking.findOne({
       listing: listing._id,
-      status: { $in: ACTIVE_STATUSES },
+      status: "approved",
       startDate: { $lt: end },
       endDate: { $gt: start },
     });
 
     if (existingBooking) {
       return res.status(409).json({
-        message: "These dates overlap with an existing active booking.",
+        message: "These dates overlap with an already approved booking.",
       });
     }
 
@@ -179,6 +179,29 @@ const getReceivedBookings = async (req, res) => {
 };
 
 
+
+// Admin: view all booking requests from every customer and listing owner.
+const getAllBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({})
+      .populate("listing", "title category images location pricePerDay")
+      .populate("renter", "name email")
+      .populate("owner", "name email")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return res.status(200).json({
+      total: bookings.length,
+      bookings,
+    });
+  } catch (error) {
+    console.error("Get all bookings error:", error.message);
+    return res.status(500).json({
+      message: "Unable to retrieve bookings.",
+    });
+  }
+};
+
 const updateBookingStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
@@ -214,10 +237,10 @@ const updateBookingStatus = async (req, res) => {
           return;
         }
 
-        if (booking.owner.toString() !== req.user.id) {
+        if (req.user.role !== "admin") {
           responseStatus = 403;
           responseBody = {
-            message: "Only the listing owner can manage this booking.",
+            message: "Only an admin can approve or reject bookings.",
           };
           return;
         }
@@ -441,6 +464,7 @@ module.exports = {
   createBooking,
   getMyBookings,
   getReceivedBookings,
+  getAllBookings,
   updateBookingStatus,
   cancelBooking,
   completeBooking,
