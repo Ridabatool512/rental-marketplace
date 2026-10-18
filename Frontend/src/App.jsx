@@ -130,7 +130,12 @@ function App() {
       try {
         const response = await api.get('/listings?limit=50')
         if (active) {
-          setBackendListings((response.data.listings || []).map(mapBackendListing))
+          const publicListings = (response.data.listings || []).map(mapBackendListing)
+          setBackendListings((current) => {
+            const merged = new Map(current.map((listing) => [listing.id, listing]))
+            publicListings.forEach((listing) => merged.set(listing.id, listing))
+            return Array.from(merged.values())
+          })
         }
       } catch (error) {
         if (active) {
