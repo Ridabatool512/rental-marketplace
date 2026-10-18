@@ -7055,3 +7055,46 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .navbar .mobile-nav-actions {
   border-color: #85404c;
 }
+
+
+/* Softer dusty-rose navigation to keep the palette warm without feeling too dark */
+.navbar {
+  background: #dfb9ad !important;
+  border-bottom: 1px solid #d2a294 !important;
+  box-shadow: 0 2px 10px rgba(83, 52, 39, 0.06);
+  backdrop-filter: none;
+}
+.navbar .logo,
+.navbar .nav-link {
+  color: #422b28;
+}
+.navbar .logo-mark {
+  background: #c98f82;
+  color: #fffaf6;
+}
+.navbar .nav-link.active,
+.navbar .nav-link:hover {
+  color: #5b2630;
+  background: #efd5cc;
+}
+.navbar .nav-actions .btn-primary,
+.navbar .btn-primary {
+  border-color: #8f514b;
+  background: #8f514b;
+  color: #fffaf6;
+}
+.navbar .nav-actions .btn-primary:hover,
+.navbar .btn-primary:hover:not(:disabled) {
+  border-color: #743c38;
+  background: #743c38;
+  color: #fffaf6;
+}
+.navbar .nav-menu-toggle {
+  border-color: #c99486;
+  background: #efd5cc;
+  color: #422b28;
+}
+.navbar .nav-links,
+.navbar .mobile-nav-actions {
+  border-color: #c99486;
+}
