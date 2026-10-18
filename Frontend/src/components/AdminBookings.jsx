@@ -56,7 +56,6 @@ function AdminBookings() {
               <p><strong>Payment method:</strong> {booking.paymentMethod === 'online' ? 'Online payment' : 'Cash on Delivery (COD)'}</p>
               <p><strong>Payment status:</strong> {booking.paymentMethod === 'cod' ? (booking.paymentStatus === 'paid' ? 'Paid (COD collected)' : 'Due on delivery') : (booking.paymentStatus || 'unpaid')}</p>
               <p><strong>Status:</strong> {booking.status}</p>
-}
             </div>
           </article>
         ))}
