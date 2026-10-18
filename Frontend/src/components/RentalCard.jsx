@@ -12,21 +12,34 @@ function RentalCard({
   const unavailableLabel = Number(item.quantity ?? 1) <= 0
     ? 'Out of stock'
     : item.available
-      ? 'Available'
-      : 'Unavailable'
+      ? 'Available to rent'
+      : 'Currently unavailable'
 
   return (
     <article className="rental-card">
-      <div className="card-image-wrap">
-        <img src={item.image || PLACEHOLDER_IMAGE} alt={item.name} loading="lazy" decoding="async" />
-        <span className="catalog-category-tag">{item.category || 'Everyday finds'}</span>
-        <span className={item.available ? 'badge available' : 'badge unavailable'}>
-          {unavailableLabel}
-        </span>
-      </div>
+      <button
+        type="button"
+        className="card-image-wrap"
+        onClick={() => onViewDetails(item)}
+        aria-label={`View details for ${item.name}`}
+      >
+        <img
+          src={item.image || PLACEHOLDER_IMAGE}
+          alt={item.name}
+          loading="lazy"
+          decoding="async"
+        />
+        <span className="card-image-open" aria-hidden="true">View item ↗</span>
+      </button>
 
       <div className="card-body">
-        <p className="card-category">FROM THE RENTAL SHELF</p>
+        <div className="card-meta-row">
+          <p className="card-category">{item.category || 'Rental item'}</p>
+          <span className={item.available ? 'card-availability is-available' : 'card-availability is-unavailable'}>
+            <span aria-hidden="true" />
+            {unavailableLabel}
+          </span>
+        </div>
         <h3>{item.name}</h3>
 
         {item.storeName && (
@@ -34,8 +47,8 @@ function RentalCard({
         )}
 
         <p className="card-price">
-          Rs. {item.pricePerDay}
-          <span> / DAY</span>
+          <strong>Rs. {item.pricePerDay}</strong>
+          <span> / day</span>
         </p>
 
         <div className="card-actions">
@@ -72,19 +85,10 @@ function RentalCard({
 
         {showOwnerActions && (
           <div className="card-owner-actions">
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={() => onEdit(item)}
-            >
+            <button type="button" className="btn btn-ghost" onClick={() => onEdit(item)}>
               Edit
             </button>
-
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={() => onRemove(item)}
-            >
+            <button type="button" className="btn btn-danger" onClick={() => onRemove(item)}>
               Remove
             </button>
           </div>
