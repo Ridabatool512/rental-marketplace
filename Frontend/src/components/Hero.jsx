@@ -37,8 +37,13 @@ function Hero({
 
         <div className="hero-cta">
           <button type="button" className="btn btn-hero" onClick={onOpenStore}>
-            Open Your Store
+            Open Your Store <span aria-hidden="true">↗</span>
           </button>
+        </div>
+        <div className="hero-proof" aria-label="Marketplace benefits">
+          <span><b aria-hidden="true">✓</b> Browse independent stores</span>
+          <span><b aria-hidden="true">✓</b> Clear daily pricing</span>
+          <span><b aria-hidden="true">✓</b> Rental requests with approval</span>
         </div>
       </div>
     </section>
