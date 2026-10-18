@@ -26,12 +26,16 @@ const parseDate = (value) => {
 // Create a booking request
 const createBooking = async (req, res) => {
   try {
-    const { listingId, startDate, endDate, phone, address, notes } = req.body;
+    const { listingId, startDate, endDate, phone, address, notes, paymentMethod = "cod" } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(listingId || "")) {
       return res.status(400).json({
         message: "A valid listing ID is required.",
       });
+    }
+
+    if (!["cod", "online"].includes(paymentMethod)) {
+      return res.status(400).json({ message: "Payment method must be cod or online." });
     }
 
     const start = parseDate(startDate);
@@ -130,6 +134,7 @@ const createBooking = async (req, res) => {
       contactPhone: phone.trim(),
       deliveryAddress: address.trim(),
       notes: typeof notes === "string" ? notes.trim() : "",
+      paymentMethod,
       status: "pending",
     });
 
