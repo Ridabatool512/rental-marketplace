@@ -6,7 +6,8 @@ dist/
 build/
 coverage/
 
-# Local backup files
+# Keep database backups local; they may contain personal data and password hashes
 **/backup/
+**/backups/
 *.backup
 *.backup.*
