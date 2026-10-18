@@ -6985,3 +6985,30 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .marketplace-simple-search {
   border-color: rgba(129, 71, 52, 0.28);
 }
+
+
+/* Navigation bar coordinated with the warm ivory and terracotta hero */
+.navbar {
+  background: #ead8cd !important;
+  border-bottom: 1px solid #d8b9a9 !important;
+  box-shadow: 0 2px 10px rgba(83, 52, 39, 0.04);
+  backdrop-filter: none;
+}
+.navbar .logo,
+.navbar .nav-link {
+  color: #302822;
+}
+.navbar .nav-link.active,
+.navbar .nav-link:hover {
+  color: #8f422d;
+  background: #f7ece5;
+}
+.navbar .nav-menu-toggle {
+  border-color: #d8b9a9;
+  background: #f7ece5;
+  color: #302822;
+}
+.navbar .nav-links,
+.navbar .mobile-nav-actions {
+  border-color: #d8b9a9;
+}
