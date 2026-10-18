@@ -309,23 +309,8 @@ const updateBookingStatus = async (req, res) => {
             throw new Error("BOOKING_RETRY_CONFLICT");
           }
 
-          // Recheck approved bookings within the transaction.
-          const conflict = await Booking.findOne({
-            _id: { $ne: booking._id },
-            listing: booking.listing,
-            status: "approved",
-            startDate: { $lt: booking.endDate },
-            endDate: { $gt: booking.startDate },
-          }).session(session);
-
-          if (conflict) {
-            responseStatus = 409;
-            responseBody = {
-              message: "Another approved booking overlaps these dates.",
-            };
-            return;
-          }
-
+          // Quantity is the inventory limit, so multiple units of the same product
+          // can be approved for overlapping dates while stock remains.
           // Each approved booking consumes one unit of stock. Stock is not
           // automatically restored; the owner updates quantity when they restock.
           const stockResult = await Listing.updateOne(
