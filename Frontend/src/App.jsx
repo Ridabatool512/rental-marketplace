@@ -730,6 +730,7 @@ async function handlePlaceOrder(customerDetails) {
             onSearchChange={setSearchText}
             onSearchSubmit={handleSearchSubmit}
             onOpenStore={() => goTo('create-store')}
+            onBrowse={() => goTo('browse')}
           />
 
         
