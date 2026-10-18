@@ -6823,3 +6823,151 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   .marketplace-product-tile:not(.marketplace-product-tile-1) .marketplace-product-photo { min-height:105px; }
   .marketplace-rail-empty { min-height:230px; }
 }
+
+
+/* Simple utility-first marketplace header: no slogan, no decorative hero imagery */
+.hero.hero-marketplace {
+  padding: 0 28px 22px;
+  color: var(--ink, #242820);
+  background: var(--page, #f7f7f3);
+  background-image: none !important;
+  overflow: visible;
+}
+.marketplace-simple-inner {
+  width: 100%;
+  max-width: 1216px;
+  margin: 0 auto;
+}
+.marketplace-simple-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 30px 0 21px;
+}
+.marketplace-simple-label {
+  display: block;
+  margin-bottom: 7px;
+  color: #777b72;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .09em;
+}
+.marketplace-simple-top h1 {
+  margin: 0;
+  color: #242820;
+  font-family: inherit;
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -.045em;
+}
+.marketplace-simple-list {
+  padding: 10px 13px;
+  border: 1px solid #d8dbd2;
+  border-radius: 5px;
+  background: #fff;
+  color: #242820;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.marketplace-simple-list:hover { border-color: #242820; }
+.marketplace-simple-list span { margin-left: 8px; }
+.marketplace-simple-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  padding: 5px 6px 5px 16px;
+  border: 1px solid #d9dcd4;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: none;
+}
+.marketplace-simple-search:focus-within { border-color: #777f70; }
+.marketplace-simple-search svg {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: #777b72;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+.marketplace-simple-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #242820;
+  font: inherit;
+  font-size: 14px;
+  box-shadow: none;
+}
+.marketplace-simple-search input:focus { outline: 0 !important; box-shadow: none !important; }
+.marketplace-simple-search input::placeholder { color: #898d84; }
+.marketplace-simple-search > button {
+  min-height: 44px;
+  padding: 0 23px;
+  border: 0;
+  border-radius: 4px;
+  background: #27362d;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.marketplace-simple-search > button:hover { background: #3e5144; }
+.marketplace-simple-categories {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding-top: 15px;
+}
+.marketplace-simple-categories > span {
+  margin-right: 4px;
+  color: #777b72;
+  font-size: 11px;
+}
+.marketplace-simple-categories button {
+  padding: 7px 11px;
+  border: 1px solid #dfe1da;
+  border-radius: 4px;
+  background: transparent;
+  color: #42473f;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.marketplace-simple-categories button:hover {
+  border-color: #8b9487;
+  background: #eeefe9;
+}
+.marketplace-simple-categories .marketplace-simple-all {
+  margin-left: auto;
+  border-color: transparent;
+  color: #27362d;
+  font-weight: 700;
+}
+.marketplace-simple-all span { margin-left: 6px; }
+.listings.marketplace { padding-top: 24px; }
+@media (max-width: 620px) {
+  .hero.hero-marketplace { padding: 0 15px 16px; }
+  .marketplace-simple-top { padding: 22px 0 16px; }
+  .marketplace-simple-top h1 { font-size: 1.8rem; }
+  .marketplace-simple-label { font-size: 9px; }
+  .marketplace-simple-list { padding: 9px 10px; font-size: 11px; }
+  .marketplace-simple-search { min-height: 53px; gap: 8px; padding-left: 11px; }
+  .marketplace-simple-search input { font-size: 12px; }
+  .marketplace-simple-search > button { min-height: 41px; padding: 0 14px; }
+  .marketplace-simple-categories { gap: 7px; }
+  .marketplace-simple-categories > span { width: 100%; }
+  .marketplace-simple-categories button { padding: 7px 9px; }
+  .marketplace-simple-categories .marketplace-simple-all { margin-left: 0; }
+}
