@@ -9,6 +9,7 @@ function Navbar({
   onOpenBookings,
   onOpenAdminBookings,
   ownerBookingUpdates = 0,
+  ownerHasStore = false,
 }) {
   return (
     <header className="navbar">
@@ -63,7 +64,7 @@ function Navbar({
             Cart ({cartCount})
           </button>
 
-          {isLoggedIn && (
+          {isLoggedIn && ownerHasStore && (
             <button
               type="button"
               className={currentPage === 'owner-bookings' ? 'nav-link active' : 'nav-link'}
