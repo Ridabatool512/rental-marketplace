@@ -129,16 +129,21 @@ Only include screenshots of features that are implemented and working in the sub
 
 ## 7. Team Member Contributions
 
-Update the names below to match the actual project team and confirm each contribution before submission.
+The project is divided between three backend members and two frontend members. Rida Batool has the primary backend responsibility and the largest share of backend integration work.
 
-| Team member | Contribution |
-|---|---|
-| Rida Batool | Backend development and integration coordination; confirm the exact modules personally implemented before final submission. |
-| Backend team member 2 — add name | Assigned backend API, database, or integration tasks — replace with actual contribution. |
-| Backend team member 3 — add name | Assigned backend API, database, or integration tasks — replace with actual contribution. |
-| Frontend team member(s) — add names | React UI, pages, styling, and frontend integration — replace with each person's actual contribution. |
+| Team member | Module | Responsibilities |
+|---|---|---|
+| **Rida Batool** | Backend lead — largest workload | Lead backend architecture and integration; manage authentication and separate user/admin login; coordinate MongoDB models and API conventions; handle payment workflow integration, environment configuration, security checks, debugging, and final backend integration/testing. |
+| **Nirma Waleed** | Backend — listings and stores | Handle listing APIs and related validation; work on store-related backend endpoints; test the assigned routes and document request/response formats. |
+| **Khadija Mehmood** | Backend — reviews and booking support | Handle review-related APIs and validation; assist with selected booking endpoint tests and error handling; document and test the assigned endpoints. Keep this scope smaller than the backend lead's workload. |
+| **Maria Aslam** | Frontend — marketplace UI | Build and refine marketplace/listing presentation, catalog and store cards, reusable UI components, responsive styling, and listing-related screens. |
+| **Laraib Sadiq** | Frontend — pages and API integration | Build assigned frontend pages and forms, connect them to backend endpoints using Axios, handle loading/error states, and test authentication and booking-related user flows with the backend team. |
 
-For a team submission, replace every placeholder with the member's name and a concise description of work actually completed. Avoid claiming unverified contributions.
+### Collaboration and integration
+- Backend members should coordinate API paths, request bodies, response formats, and authentication requirements before frontend integration.
+- Frontend members should use the agreed API base URL and avoid duplicating backend business logic in the browser.
+- Each member should work on a separate feature branch and open a pull request to main after testing.
+- The table describes the agreed task allocation. Update it if the team's actual completed work changes, and only claim contributions that each member has completed.
 
 ## Current Scope and Notes
 
