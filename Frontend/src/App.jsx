@@ -381,7 +381,6 @@ function App() {
       pricePerDay: Number(formData.pricePerDay),
       location: activeStore.location,
       status: formData.available ? 'available' : 'unavailable',
-      storeId: activeStore.id,
     }
 
     try {
@@ -392,8 +391,13 @@ function App() {
         setProducts((current) => current.map((item) => item.id === editingProduct.id ? { ...item, ...formData } : item))
         setStatusMessage('Listing updated successfully.')
       } else {
-        const response = await api.post('/listings', listingData)
-        const created = mapBackendListing(response.data.listing)
+        const response = await api.post('/listings', { ...listingData, storeId: activeStore.id })
+        const created = {
+          ...mapBackendListing(response.data.listing),
+          storeName: activeStore.name,
+          storeId: activeStore.id,
+          location: activeStore.location,
+        }
         setBackendListings((current) => [created, ...current])
         const localProduct = {
           id: created.id,
