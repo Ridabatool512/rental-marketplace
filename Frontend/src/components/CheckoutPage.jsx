@@ -10,10 +10,14 @@ function CheckoutPage({
     const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
 
+  const rentalDays = startDate && endDate
+    ? Math.max(1, Math.round((new Date(`${endDate}T00:00:00`).getTime() - new Date(`${startDate}T00:00:00`).getTime()) / 86400000))
+    : null
+
   const total = items.reduce(
-      (sum, item) => sum + item.pricePerDay * item.days,
-      0
-    )
+    (sum, item) => sum + item.pricePerDay * (rentalDays || item.days),
+    0
+  )
   
     function handleSubmit(event) {
       event.preventDefault()
@@ -26,6 +30,8 @@ function CheckoutPage({
         phone: formData.get('phone'),
         address: formData.get('address'),
         notes: formData.get('notes'),
+        startDate: formData.get('startDate'),
+        endDate: formData.get('endDate'),
       })
     }
   
@@ -58,10 +64,10 @@ function CheckoutPage({
               <div>
                 <strong>{item.name}</strong>
                 <p>
-                  {item.days} day(s) × Rs.{item.pricePerDay}
+                  {rentalDays || item.days} day(s) × Rs.{item.pricePerDay}
                 </p>
               </div>
-              <strong>Rs.{item.pricePerDay * item.days}</strong>
+              <strong>Rs.{item.pricePerDay * (rentalDays || item.days)}</strong>
             </div>
           ))}
   
