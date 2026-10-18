@@ -687,7 +687,7 @@ async function handlePlaceOrder(customerDetails) {
     const itemIds = new Set(checkoutItems.map((item) => item.id))
     setCartItems((current) => current.filter((item) => !itemIds.has(item.id)))
     setCheckoutItems([])
-    setStatusMessage(`Submitted ${createdBookings.length} rental request(s). Status: pending admin approval.`)
+    setStatusMessage(`Submitted ${createdBookings.length} rental request(s). Status: waiting for the store owner to approve.`)
     goTo('my-bookings')
   } catch (error) {
     window.alert(error.response?.data?.message || error.message || 'Could not submit the rental request.')
