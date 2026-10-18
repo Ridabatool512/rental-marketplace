@@ -7,7 +7,7 @@ function Footer({ onNavigate }) {
             <span className="logo-mark">R</span>
             Rentify
           </p>
-          <p>A local marketplace for stores and everyday gear.</p>
+          <p>A local marketplace for finding useful things and giving good items another life.</p>
         </div>
         <div className="footer-links">
           <button type="button" onClick={() => onNavigate('home')}>
@@ -26,7 +26,7 @@ function Footer({ onNavigate }) {
             Open Your Store
           </button>
         </div>
-        <p className="footer-copy">© 2026 Rentify. Built for a hackathon demo.</p>
+        <p className="footer-copy">© 2026 Rentify. Own less. Experience more.</p>
       </div>
     </footer>
   )
