@@ -55,7 +55,7 @@ function mapBackendListing(listing) {
 }
 
 function App() {
-  const [page, setPage] = useState('home')
+  const [page, setPage] = useState(() => window.location.hash.toLowerCase() === '#admin' ? 'admin-bookings' : 'home')
 
   const [currentUser, setCurrentUser] = useState(() => {
     if (!sessionStorage.getItem('token')) return null
@@ -81,6 +81,32 @@ function App() {
   const [activeStoreId, setActiveStoreId] = useState(null)
   const [editingProduct, setEditingProduct] = useState(null)
   const [statusMessage, setStatusMessage] = useState('')
+
+  useEffect(() => {
+    function handleHashChange() {
+      if (window.location.hash.toLowerCase() === '#admin') {
+        if (currentUser?.role === 'admin') {
+          setPage('admin-bookings')
+        } else if (!currentUser) {
+          setAfterAuthPage('admin-bookings')
+          setPage('sign-in')
+        } else {
+          setStatusMessage('Access denied. This page is only available to admins.')
+          setPage('home')
+          window.location.hash = ''
+        }
+      } else if (page === 'admin-bookings') {
+        setPage('home')
+      }
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+    if (window.location.hash.toLowerCase() === '#admin') {
+      handleHashChange()
+    }
+
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [currentUser, page])
 
   useEffect(() => {
     saveStores(stores)
@@ -156,14 +182,32 @@ function App() {
   )
 
   function goTo(nextPage) {
-    if (nextPage === 'create-store' && !currentUser) {
-      setAfterAuthPage('create-store')
-      setPage('sign-up')
-    } else if (nextPage === 'my-stores' && !currentUser) {
-      setAfterAuthPage('my-stores')
-      setPage('sign-in')
+    if (nextPage === 'admin-bookings') {
+      if (currentUser?.role === 'admin') {
+        window.location.hash = 'admin'
+        setPage('admin-bookings')
+      } else if (!currentUser) {
+        window.location.hash = 'admin'
+        setAfterAuthPage('admin-bookings')
+        setPage('sign-in')
+      } else {
+        setStatusMessage('Access denied. This page is only available to admins.')
+        setPage('home')
+      }
     } else {
-      setPage(nextPage)
+      if (window.location.hash.toLowerCase() === '#admin') {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search)
+      }
+
+      if (nextPage === 'create-store' && !currentUser) {
+        setAfterAuthPage('create-store')
+        setPage('sign-up')
+      } else if (nextPage === 'my-stores' && !currentUser) {
+        setAfterAuthPage('my-stores')
+        setPage('sign-in')
+      } else {
+        setPage(nextPage)
+      }
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' })
