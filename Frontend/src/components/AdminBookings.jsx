@@ -66,6 +66,8 @@ function AdminBookings() {
               <p><strong>Dates:</strong> {new Date(booking.startDate).toLocaleDateString()} – {new Date(booking.endDate).toLocaleDateString()}</p>
               <p><strong>Duration:</strong> {booking.totalDays} day(s)</p>
               <p><strong>Total:</strong> Rs. {booking.totalPrice}</p>
+              <p><strong>Payment method:</strong> {booking.paymentMethod === 'online' ? 'Online payment' : 'Cash on Delivery (COD)'}</p>
+              <p><strong>Payment status:</strong> {booking.paymentMethod === 'cod' ? 'Due on delivery' : (booking.paymentStatus || 'unpaid')}</p>
               <p><strong>Status:</strong> {booking.status}</p>
               {booking.status === 'pending' && (
                 <div className="card-actions">
