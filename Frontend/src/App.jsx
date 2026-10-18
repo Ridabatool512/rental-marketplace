@@ -47,7 +47,8 @@ function mapBackendListing(listing) {
     image: listing.images?.[0] || '',
     images: listing.images || [],
     pricePerDay: listing.pricePerDay,
-    available: listing.status === 'available',
+    quantity: Number(listing.quantity ?? 1),
+    available: listing.status === 'available' && Number(listing.quantity ?? 1) > 0,
     storeName: listing.store?.name || listing.owner?.name || 'Rental owner',
     location: listing.store?.location || listing.location || '',
     storeId: String(listing.store?._id || listing.store || ''),
@@ -503,8 +504,9 @@ function App() {
       images: formData.images || (formData.image ? [formData.image] : []),
       condition: 'good',
       pricePerDay: Number(formData.pricePerDay),
+      quantity: Number(formData.quantity),
       location: activeStore.location,
-      status: formData.available ? 'available' : 'unavailable',
+      status: Number(formData.quantity) === 0 ? 'rented' : formData.available ? 'available' : 'unavailable',
     }
 
     try {
