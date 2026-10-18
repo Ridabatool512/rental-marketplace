@@ -18,7 +18,7 @@ function ProductForm({ initialProduct, onSubmit, onCancel, submitLabel }) {
       (initialProduct?.image ? [initialProduct.image] : []),
   )
   const [available, setAvailable] = useState(
-    initialProduct ? initialProduct.available : true,
+    initialProduct ? (initialProduct.status === 'rented' ? true : initialProduct.available) : true,
   )
   const [errors, setErrors] = useState({})
    
