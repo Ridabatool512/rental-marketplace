@@ -48,6 +48,14 @@ function Navbar({
 
           <button
             type="button"
+            className={currentPage === 'my-rentals' ? 'nav-link active' : 'nav-link'}
+            onClick={() => onNavigate('my-rentals')}
+          >
+            My Rentals
+          </button>
+
+          <button
+            type="button"
             className={currentPage === 'cart' ? 'nav-link active' : 'nav-link'}
             onClick={() => onNavigate('cart')}
           >
