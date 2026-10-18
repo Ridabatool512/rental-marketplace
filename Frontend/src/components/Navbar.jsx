@@ -5,6 +5,9 @@ function Navbar({
   isLoggedIn,
   onSignOut,
   cartCount = 0,
+  userRole,
+  onOpenBookings,
+  onOpenAdminBookings,
 }) {
   return (
     <header className="navbar">
@@ -50,6 +53,26 @@ function Navbar({
           >
             Cart ({cartCount})
           </button>
+
+          {isLoggedIn && onOpenBookings && (
+            <button
+              type="button"
+              className={currentPage === 'my-bookings' ? 'nav-link active' : 'nav-link'}
+              onClick={onOpenBookings}
+            >
+              My Requests
+            </button>
+          )}
+
+          {isLoggedIn && userRole === 'admin' && onOpenAdminBookings && (
+            <button
+              type="button"
+              className={currentPage === 'admin-bookings' ? 'nav-link active' : 'nav-link'}
+              onClick={onOpenAdminBookings}
+            >
+              Admin Bookings
+            </button>
+          )}
 
           {isLoggedIn && (
             <button
