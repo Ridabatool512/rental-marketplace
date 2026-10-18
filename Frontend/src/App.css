@@ -6947,3 +6947,60 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media (prefers-reduced-motion:reduce) {
   .marketplace .rental-card:hover { transform:none; }
 }
+
+
+/* Header finish: bring navigation into the same print-like visual language */
+.navbar {
+  position:sticky; top:0; z-index:30;
+  background:rgba(248,247,242,.96); color:#292A25;
+  border-bottom:1px solid #DEDCD3;
+  backdrop-filter:blur(12px);
+}
+.navbar-inner {
+  max-width:1280px; min-height:70px; padding:10px 32px; gap:22px;
+}
+.logo {
+  gap:9px; color:#292A25; font-family:Georgia,'Times New Roman',serif;
+  font-size:22px; font-weight:400; letter-spacing:-.06em;
+}
+.logo-mark {
+  width:29px; height:29px; border-radius:0;
+  background:var(--accent); color:#fff; font-family:Arial,sans-serif;
+  font-size:15px; font-weight:700;
+}
+.nav-links,.nav-actions { gap:3px; }
+.nav-link {
+  padding:9px 10px; border-radius:0; color:#696A62;
+  font-size:11px; font-weight:600; white-space:nowrap;
+}
+.nav-link.active,.nav-link:hover {
+  color:#292A25; background:transparent;
+  box-shadow:inset 0 -2px 0 var(--accent);
+}
+.nav-actions .nav-link { padding-left:8px; padding-right:8px; }
+.navbar .btn-primary {
+  border-radius:0; padding:11px 14px;
+  background:#292A25; color:#fff; font-size:11px;
+}
+.navbar .btn-primary:hover:not(:disabled) { background:var(--accent); }
+.nav-menu-toggle { color:#292A25; }
+.menu-lines span { background:currentColor; }
+@media (max-width:1100px) {
+  .navbar-inner { padding-left:20px; padding-right:20px; gap:10px; }
+  .nav-links,.nav-actions { gap:0; }
+  .nav-link { padding-left:7px; padding-right:7px; font-size:10px; }
+}
+@media (max-width:800px) {
+  .navbar-inner { min-height:64px; padding:10px 18px; }
+  .logo { font-size:21px; }
+  .nav-links {
+    background:#F8F7F2; border-top:1px solid #DEDCD3;
+    box-shadow:0 16px 24px rgba(41,42,37,.08);
+  }
+  .nav-links .nav-link { color:#42433C; padding:12px 10px; }
+  .nav-links .nav-link.active,.nav-links .nav-link:hover {
+    color:#292A25; background:#EFEEE7; box-shadow:none;
+  }
+  .mobile-nav-actions { border-top:1px solid #DEDCD3; }
+  .mobile-nav-actions .btn-primary { width:100%; }
+}
