@@ -734,6 +734,8 @@ async function handlePlaceOrder(customerDetails) {
               setCategory(nextCategory)
               goTo('browse')
             }}
+            featuredItems={visibleProducts}
+            onViewItem={setSelectedItem}
           />
 
         
