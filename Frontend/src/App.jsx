@@ -731,14 +731,19 @@ async function handlePlaceOrder(customerDetails) {
             onSearchSubmit={handleSearchSubmit}
             onOpenStore={() => goTo('create-store')}
             onBrowse={() => goTo('browse')}
+            onSelectCategory={(nextCategory) => {
+              setCategory(nextCategory)
+              goTo('browse')
+            }}
           />
 
         
 
           <section className="listings marketplace">
             <div className="section-heading">
-              <p className="eyebrow">Marketplace</p>
-              <h2>Products added by store owners</h2>
+              <p className="eyebrow">The marketplace</p>
+              <h2>Useful things, ready when you need them.</h2>
+              <p className="section-description">Browse real listings from Rentify store owners, compare daily prices, and choose what fits your plans.</p>
             </div>
 
             <CategoryFilter
@@ -760,6 +765,31 @@ async function handlePlaceOrder(customerDetails) {
                   : undefined
               }
             />
+          </section>
+
+          <section className="rental-confidence" aria-labelledby="rental-confidence-title">
+            <div className="confidence-heading">
+              <p className="eyebrow">Clear from the start</p>
+              <h2 id="rental-confidence-title">A better way to borrow what you need.</h2>
+              <p>Make your plans with the listing details in front of you, and know what happens before a rental is confirmed.</p>
+            </div>
+            <div className="confidence-points">
+              <article>
+                <span className="confidence-number">01</span>
+                <h3>See the daily price</h3>
+                <p>Every rental card shows the listed price per day before you send a request.</p>
+              </article>
+              <article>
+                <span className="confidence-number">02</span>
+                <h3>The owner reviews it</h3>
+                <p>Your request waits for the store owner to approve or decline it.</p>
+              </article>
+              <article>
+                <span className="confidence-number">03</span>
+                <h3>Choose your dates</h3>
+                <p>Share your rental dates and the details requested at checkout before submitting.</p>
+              </article>
+            </div>
           </section>
 
           <HowItWorks />
