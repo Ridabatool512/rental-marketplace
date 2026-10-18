@@ -17,6 +17,7 @@ const createListing = async (req, res) => {
       location,
       storeId,
       quantity = 1,
+      status,
     } = req.body;
 
     if (
@@ -114,7 +115,7 @@ const createListing = async (req, res) => {
         }),
       location: location.trim(),
       quantity: stockQuantity,
-      status: stockQuantity === 0 ? "rented" : "available",
+      status: stockQuantity === 0 ? "rented" : status === "unavailable" ? "unavailable" : "available",
       owner: req.user.id,
       store: store._id,
     });
