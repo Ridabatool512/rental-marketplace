@@ -6973,14 +6973,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 
-/* Clearly visible but still soft sage background for the marketplace search area */
+/* Distinct sage-green marketplace hero background */
 .hero.hero-marketplace {
-  background: linear-gradient(115deg, #e1e9d9 0%, #edf0e5 48%, #e5e9dc 100%) !important;
-  border-bottom: 1px solid #d5ddcc;
+  background: #d5e2cb !important;
+  background-image: linear-gradient(120deg, #d5e2cb 0%, #e2e9d8 55%, #cbdcc1 100%) !important;
+  border-bottom: 1px solid #b9cbae;
 }
 .marketplace-simple-top {
-  border-bottom: 1px solid rgba(73, 83, 68, 0.18);
+  border-bottom: 1px solid rgba(52, 72, 46, 0.2);
 }
 .marketplace-simple-search {
-  border-color: rgba(73, 83, 68, 0.28);
+  border-color: rgba(52, 72, 46, 0.32);
 }
