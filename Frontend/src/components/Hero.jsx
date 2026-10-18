@@ -5,6 +5,7 @@ function Hero({
   onSearchChange,
   onSearchSubmit,
   onOpenStore,
+  onBrowse,
   onSelectCategory,
 }) {
   function handleSubmit(event) {
@@ -23,12 +24,27 @@ function Hero({
         </div>
 
         <div className="marketplace-intro-row">
-          <div>
+          <div className="marketplace-headline-block">
+            <p className="marketplace-edition">THE RENTAL SHELF <span>— No. 001</span></p>
             <h1 id="marketplace-intro">Borrow the good<br /><span>stuff.</span></h1>
+            <p className="marketplace-intro-copy">
+              For the things you need once in a while, not forever.
+            </p>
           </div>
-          <p className="marketplace-intro-copy">
-            A drill for Saturday. A camera for the trip. Find what you need, use it well, then pass it on.
-          </p>
+          <aside className="marketplace-editorial" aria-label="The Rentify idea">
+            <div className="editorial-note-top"><span>THE IDEA</span><span>01 / 03</span></div>
+            <div className="editorial-loop" aria-hidden="true">
+              <svg viewBox="0 0 180 110" focusable="false">
+                <path d="M28 56c0-22 18-40 40-40 16 0 29 9 36 22" />
+                <path d="m91 35 13 4 2-14" />
+                <path d="M152 55c0 22-18 40-40 40-16 0-29-9-36-22" />
+                <path d="m89 76-13-4-2 14" />
+              </svg>
+              <span>IN<br />ROTATION</span>
+            </div>
+            <p>Use it for the weekend.<br />Pass it on for the next.</p>
+            <div className="editorial-note-bottom"><span>LESS WASTE</span><span>MORE USE</span></div>
+          </aside>
         </div>
 
         <form className="marketplace-search" onSubmit={handleSubmit} role="search">
@@ -50,13 +66,16 @@ function Hero({
         </form>
 
         <div className="marketplace-categories">
-          <span className="marketplace-category-label">START WITH A CATEGORY</span>
+          <span className="marketplace-category-label">SHOP BY NEED</span>
           <div className="marketplace-category-links">
-            {PRODUCT_CATEGORIES.map((item) => (
+            {PRODUCT_CATEGORIES.map((item, index) => (
               <button key={item} type="button" onClick={() => onSelectCategory(item)}>
-                {item}<span aria-hidden="true">↗</span>
+                <span className="category-index">{String(index + 1).padStart(2, '0')}</span>{item}<span aria-hidden="true">↗</span>
               </button>
             ))}
+            <button type="button" className="marketplace-all-link" onClick={onBrowse}>
+              All rentals <span aria-hidden="true">→</span>
+            </button>
           </div>
         </div>
       </div>
