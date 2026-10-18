@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 
 function CheckoutPage({
     items,
@@ -5,7 +7,10 @@ function CheckoutPage({
     onBackToCart,
     onContinueShopping,
   }) {
-    const total = items.reduce(
+    const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+
+  const total = items.reduce(
       (sum, item) => sum + item.pricePerDay * item.days,
       0
     )
@@ -63,7 +68,33 @@ function CheckoutPage({
           <h3>Total: Rs.{total}</h3>
         </section>
   
-        <form className="checkout-form" onSubmit={handleSubmit}>
+        <form className="checkout-form" onSubmit={handleSubmit}> 
+          <label>
+            Rental start date
+            <input
+              type="date"
+              name="startDate"
+              min={new Date().toISOString().slice(0, 10)}
+              value={startDate}
+              onChange={(event) => {
+                setStartDate(event.target.value)
+                if (endDate && event.target.value >= endDate) setEndDate('')
+              }}
+              required
+            />
+          </label>
+
+          <label>
+            Rental end date
+            <input
+              type="date"
+              name="endDate"
+              min={startDate || new Date().toISOString().slice(0, 10)}
+              value={endDate}
+              onChange={(event) => setEndDate(event.target.value)}
+              required
+            />
+          </label>
           <label>
             Full name
             <input
@@ -110,7 +141,7 @@ function CheckoutPage({
           </label>
   
           <p>
-            Demo checkout only. No real payment will be taken.
+            Submitting creates a rental request. The request stays pending until an admin reviews it. No payment is taken here.
           </p>
   
           <div className="checkout-actions">
