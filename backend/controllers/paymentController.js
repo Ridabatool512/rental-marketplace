@@ -38,6 +38,14 @@ const createDemoPayment = async (req, res) => {
         return;
       }
 
+      if (booking.paymentMethod !== "online") {
+        result = {
+          status: 400,
+          body: { message: "This booking uses Cash on Delivery, not online payment." },
+        };
+        return;
+      }
+
       if (booking.status !== "approved") {
         result = {
           status: 400,
