@@ -1,10 +1,11 @@
 
 const mongoose = require("mongoose");
 const Store = require("../models/Store");
+const Listing = require("../models/Listing");
 
 const createStore = async (req, res) => {
   try {
-    const { name, description, location } = req.body;
+    const { name, description, location, category, coverImage } = req.body;
 
     if (
       typeof name !== "string" ||
@@ -22,6 +23,8 @@ const createStore = async (req, res) => {
       description:
         typeof description === "string" ? description.trim() : "",
       location: location.trim(),
+      category: typeof category === "string" && category.trim() ? category.trim() : "General",
+      coverImage: typeof coverImage === "string" ? coverImage.trim() : "",
       owner: req.user.id,
     });
 
@@ -121,7 +124,7 @@ const updateStore = async (req, res) => {
       });
     }
 
-    const allowedFields = ["name", "description", "location"];
+    const allowedFields = ["name", "description", "location", "category", "coverImage"];
 
     for (const field of allowedFields) {
       if (req.body[field] !== undefined) {
@@ -186,10 +189,11 @@ const deleteStore = async (req, res) => {
       });
     }
 
+    await Listing.deleteMany({ store: store._id, owner: req.user.id });
     await store.deleteOne();
 
     return res.status(200).json({
-      message: "Store deleted successfully",
+      message: "Store and its listings deleted successfully",
     });
   } catch (error) {
     console.error("Delete store error:", error.message);
