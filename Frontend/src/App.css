@@ -7012,3 +7012,46 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .navbar .mobile-nav-actions {
   border-color: #d8b9a9;
 }
+
+
+/* Deep maroon navigation bar to pair with the warm ivory hero */
+.navbar {
+  background: #5b1f2b !important;
+  border-bottom: 1px solid #491722 !important;
+  box-shadow: 0 2px 10px rgba(55, 16, 26, 0.12);
+  backdrop-filter: none;
+}
+.navbar .logo,
+.navbar .nav-link {
+  color: #fff7f2;
+}
+.navbar .logo-mark {
+  background: #7b3340;
+  color: #fffaf6;
+}
+.navbar .nav-link.active,
+.navbar .nav-link:hover {
+  color: #ffffff;
+  background: #74303d;
+}
+.navbar .nav-actions .btn-primary,
+.navbar .btn-primary {
+  border-color: #e8c9bb;
+  background: #f3e7df;
+  color: #5b1f2b;
+}
+.navbar .nav-actions .btn-primary:hover,
+.navbar .btn-primary:hover:not(:disabled) {
+  border-color: #fff1e8;
+  background: #fff1e8;
+  color: #491722;
+}
+.navbar .nav-menu-toggle {
+  border-color: #85404c;
+  background: #74303d;
+  color: #fff7f2;
+}
+.navbar .nav-links,
+.navbar .mobile-nav-actions {
+  border-color: #85404c;
+}
