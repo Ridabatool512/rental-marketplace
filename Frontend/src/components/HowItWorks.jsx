@@ -1,16 +1,28 @@
 function HowItWorks() {
   const steps = [
-    { number: '01', title: 'Find what fits your plans', text: 'Browse real listings, compare daily prices, and open an item to check its details.' },
-    { number: '02', title: 'Choose your dates', text: 'Send a rental request with the dates and information asked for at checkout.' },
-    { number: '03', title: 'Hear back from the owner', text: 'The store owner reviews your request and lets you know whether it is approved.' },
+    {
+      number: '01',
+      title: 'Find the right thing',
+      text: 'Search listings and compare daily prices before choosing what suits your plans.',
+    },
+    {
+      number: '02',
+      title: 'Send a rental request',
+      text: 'Choose your dates and share the details needed to arrange your rental.',
+    },
+    {
+      number: '03',
+      title: 'Get the owner’s answer',
+      text: 'The store owner reviews your request. Your rental is not confirmed until it is approved.',
+    },
   ]
 
   return (
     <section className="how" id="how-it-works" aria-labelledby="how-heading">
-      <div className="section-heading how-heading">
-        <p className="eyebrow">A FIELD GUIDE TO RENTING</p>
-        <h2 id="how-heading">Good things, shared simply.</h2>
-        <p className="section-description">A few clear steps between finding what you need and getting on with your plans.</p>
+      <div className="how-intro">
+        <p className="eyebrow">HOW RENTIFY WORKS</p>
+        <h2 id="how-heading">Less buying. More doing.</h2>
+        <p className="section-description">A straightforward way to get the things you need, only for the time you need them.</p>
       </div>
       <div className="steps">
         {steps.map((step) => (
