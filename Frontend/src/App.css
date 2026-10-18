@@ -7140,3 +7140,45 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .navbar .mobile-nav-actions {
   border-color: #c18c7f;
 }
+
+
+/* One shade deeper dusty rose navbar */
+.navbar {
+  background: #c58e81 !important;
+  border-bottom-color: #b77b6e !important;
+  box-shadow: 0 2px 10px rgba(83, 52, 39, 0.08);
+}
+.navbar .logo,
+.navbar .nav-link {
+  color: #3d2522;
+}
+.navbar .logo-mark {
+  background: #ad7065;
+  color: #fffaf6;
+}
+.navbar .nav-link.active,
+.navbar .nav-link:hover {
+  color: #4d2029;
+  background: #dfb2a6;
+}
+.navbar .nav-actions .btn-primary,
+.navbar .btn-primary {
+  border-color: #854840;
+  background: #854840;
+  color: #fffaf6;
+}
+.navbar .nav-actions .btn-primary:hover,
+.navbar .btn-primary:hover:not(:disabled) {
+  border-color: #6f3934;
+  background: #6f3934;
+  color: #fffaf6;
+}
+.navbar .nav-menu-toggle {
+  border-color: #b77b6e;
+  background: #dfb2a6;
+  color: #3d2522;
+}
+.navbar .nav-links,
+.navbar .mobile-nav-actions {
+  border-color: #b77b6e;
+}
