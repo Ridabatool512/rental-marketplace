@@ -138,9 +138,9 @@ function handleSubmit(event) {
   <input
     name="password"
     type="password"
-    placeholder="At least 6 characters"
+    placeholder="At least 8 characters"
     autoComplete={isSignUp ? 'new-password' : 'current-password'}
-    minLength={6}
+    minLength={8}
     required
   />
 </label>
