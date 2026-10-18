@@ -91,7 +91,7 @@ function RentalModal({
             <button
               type="button"
               className="btn btn-ghost"
-              onClick={() => onVisitStore(item.storeId)}
+              onClick={() => onVisitStore(item)}
             >
               Visit store
             </button>
