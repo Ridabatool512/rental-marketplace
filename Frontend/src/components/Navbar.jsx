@@ -64,15 +64,6 @@ function Navbar({
             </button>
           )}
 
-          {isLoggedIn && userRole === 'admin' && onOpenAdminBookings && (
-            <button
-              type="button"
-              className={currentPage === 'admin-bookings' ? 'nav-link active' : 'nav-link'}
-              onClick={onOpenAdminBookings}
-            >
-              Admin Bookings
-            </button>
-          )}
 
           {isLoggedIn && (
             <button
