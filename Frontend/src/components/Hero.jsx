@@ -43,15 +43,15 @@ function Hero({
               value={searchText}
               onChange={(event) => onSearchChange(event.target.value)}
             />
-            <button type="submit" className="btn btn-primary">Explore rentals</button>
+            <button type="submit" className="btn btn-primary">Search</button>
           </form>
 
           <div className="hero-actions">
-            <button type="button" className="btn btn-hero" onClick={onBrowse}>
+            <button type="button" className="btn btn-primary hero-explore-btn" onClick={onBrowse}>
               Explore Rentals <span aria-hidden="true">↗</span>
             </button>
-            <button type="button" className="hero-owner-link" onClick={onOpenStore}>
-              Have something worth sharing? <strong>List an item</strong>
+            <button type="button" className="btn btn-hero-secondary" onClick={onOpenStore}>
+              List an Item
             </button>
           </div>
 
