@@ -755,7 +755,8 @@ async function handlePlaceOrder(customerDetails) {
               onViewDetails={setSelectedItem}
               onAddToCart={handleAddToCart}
               onRentNow={handleRentNow}
-              emptyTitle={isLoadingListings ? 'Loading rentals...' : 'No server listings yet'}
+              loading={isLoadingListings}
+            emptyTitle={isLoadingListings ? 'Loading rentals...' : 'No server listings yet'}
               emptyText={isLoadingListings ? 'Getting available rentals from the server.' : 'Sign in and open your store to add the first rental listing.'}
               emptyActionLabel="Open Your Store"
               onEmptyAction={
@@ -825,6 +826,7 @@ async function handlePlaceOrder(customerDetails) {
             onViewDetails={setSelectedItem}
             onAddToCart={handleAddToCart}
             onRentNow={handleRentNow}
+            loading={isLoadingListings}
             emptyTitle={isLoadingListings ? 'Loading rentals...' : 'No server listings yet'}
             emptyText={isLoadingListings ? 'Getting available rentals from the server.' : 'Sign in and open your store to add the first rental listing.'}
             emptyActionLabel="Open Your Store"
