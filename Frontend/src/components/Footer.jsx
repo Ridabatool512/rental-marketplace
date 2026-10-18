@@ -3,14 +3,14 @@ function Footer({ onNavigate }) {
     <footer className="footer">
       <div className="footer-inner">
         <div className="footer-brand-block">
-          <p className="logo footer-logo">
+          <button type="button" className="logo footer-logo" onClick={() => onNavigate('home')} aria-label="Rentify home">
             <span className="logo-mark" aria-hidden="true">R</span>
             Rentify
-          </p>
-          <p>A borrowing marketplace for useful things, good plans, and giving well-made items another life.</p>
+          </button>
+          <p>Get more out of the things around you. Rent what you need, and make room for what comes next.</p>
         </div>
         <div className="footer-link-column">
-          <p className="footer-column-label">FIND YOUR THING</p>
+          <p className="footer-column-label">EXPLORE</p>
           <div className="footer-links">
             <button type="button" onClick={() => onNavigate('home')}>Home</button>
             <button type="button" onClick={() => onNavigate('browse')}>Browse rentals</button>
@@ -18,15 +18,15 @@ function Footer({ onNavigate }) {
           </div>
         </div>
         <div className="footer-link-column">
-          <p className="footer-column-label">YOUR RENTIFY</p>
+          <p className="footer-column-label">YOUR ACCOUNT</p>
           <div className="footer-links">
             <button type="button" onClick={() => onNavigate('my-rentals')}>My rentals</button>
-            <button type="button" onClick={() => onNavigate('create-store')}>List your item</button>
+            <button type="button" onClick={() => onNavigate('create-store')}>List an item</button>
           </div>
         </div>
         <div className="footer-copy">
-          <span>EST. 2024 — A BORROWING MARKETPLACE</span>
-          <span>© 2026 Rentify. Own less. Experience more.</span>
+          <span>RENTIFY · A MARKETPLACE FOR EVERYDAY RENTALS</span>
+          <span>© {new Date().getFullYear()} Rentify</span>
         </div>
       </div>
     </footer>
