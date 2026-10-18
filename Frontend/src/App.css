@@ -6728,3 +6728,133 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   .marketplace .rental-grid { grid-template-columns:1fr; gap:12px; }
   .marketplace .card-image-wrap { height:250px; }
 }
+
+
+/* Product-led art direction: more character, less landing-page polish */
+.hero.hero-marketplace { padding-bottom: 24px; }
+.marketplace-topline > p { letter-spacing:.075em; }
+.marketplace-intro-row { padding-top:35px; padding-bottom:28px; }
+.marketplace-intro-row h1 {
+  font-size:clamp(2.7rem,5.25vw,5rem);
+  font-weight:600;
+  letter-spacing:-.075em;
+  line-height:.94;
+}
+.marketplace-intro-row h1 span { position:relative; display:inline-block; }
+.marketplace-intro-row h1 span::after {
+  content:""; position:absolute; left:1px; right:3%; bottom:-5px; height:4px;
+  background:var(--accent); transform:rotate(-1deg); transform-origin:left center;
+}
+.marketplace-intro-copy { max-width:310px; font-size:14px; }
+.marketplace-search { min-height:64px; border-color:#C9CEC9; }
+.marketplace-search > button { min-width:154px; }
+.marketplace-categories { padding-top:19px; }
+.marketplace-category-label { text-transform:uppercase; font-size:9px; letter-spacing:.09em; }
+.marketplace-category-links button {
+  border-color:transparent;
+  border-bottom-color:#D6DAD6;
+  padding:7px 4px;
+  border-radius:0;
+  background:transparent;
+}
+.marketplace-category-links button:hover { border-color:var(--accent); background:transparent; }
+.listings.marketplace {
+  max-width:none;
+  padding:42px max(32px,calc((100vw - 1216px)/2)) 76px;
+  background:#fff;
+  border-top:1px solid var(--line);
+}
+.marketplace .section-heading { margin-bottom:24px; }
+.marketplace .section-heading .eyebrow {
+  color:var(--accent); font-size:9px; letter-spacing:.12em;
+}
+.marketplace .section-heading h2 {
+  font-size:clamp(1.8rem,2.8vw,2.35rem);
+  font-weight:600; letter-spacing:-.055em;
+}
+.marketplace .section-description { color:var(--muted); font-size:13px; }
+.marketplace .category-row { gap:6px; margin-bottom:23px; }
+.marketplace .category-chip {
+  border-color:#E0E3DF; border-radius:3px; background:#fff;
+  padding:8px 11px; font-size:11px;
+}
+.marketplace .category-chip.active { border-color:var(--ink); background:var(--ink); }
+.marketplace .rental-grid { gap:22px 16px; }
+.marketplace .rental-card {
+  border:0; border-bottom:1px solid #E5E7E3; border-radius:0;
+  background:transparent;
+}
+.marketplace .rental-card:hover { border-color:#B7BDB7; }
+.marketplace .card-image-wrap {
+  height:auto; aspect-ratio:1.16 / 1; border-radius:3px;
+  background:#F0F0EC;
+}
+.marketplace .card-image-wrap img { transition:transform 350ms cubic-bezier(.2,.7,.2,1); }
+.marketplace .card-image-open {
+  right:9px; bottom:9px; padding:8px 10px; border-radius:2px;
+  background:var(--ink); color:white; font-size:10px;
+}
+.marketplace .card-body { gap:8px; padding:13px 0 15px; }
+.marketplace .card-meta-row { align-items:center; }
+.marketplace .card-category { font-size:9px; letter-spacing:.09em; }
+.marketplace .card-availability { font-size:9px; }
+.marketplace .card-availability.is-available { color:#28654A; }
+.marketplace .card-body h3 { font-size:16px; font-weight:600; letter-spacing:-.035em; }
+.marketplace .store-name-chip { font-size:11px; }
+.marketplace .card-price { margin:2px 0 7px; font-size:18px; }
+.marketplace .card-price span { font-size:11px; }
+.marketplace .card-actions {
+  grid-template-columns:1fr 1fr 1fr;
+  gap:6px;
+  padding-top:2px;
+}
+.marketplace .card-actions .btn:first-child { grid-column:auto; }
+.marketplace .card-actions .btn {
+  min-height:34px; padding:7px 5px; font-size:10px; white-space:nowrap;
+}
+.marketplace .card-actions .btn:first-child {
+  border-color:#D8DDD8; background:transparent; color:var(--ink);
+}
+.marketplace .card-actions .btn:first-child:hover:not(:disabled) {
+  border-color:var(--ink); background:var(--ink); color:#fff;
+}
+.marketplace .card-actions .btn:nth-child(2) {
+  border-color:#D8DDD8; background:#fff; color:var(--ink);
+}
+.marketplace .card-actions .btn:nth-child(2):hover:not(:disabled) {
+  border-color:var(--ink); background:var(--ink); color:#fff;
+}
+.marketplace .card-actions .btn:nth-child(3) {
+  border-color:var(--accent); background:var(--accent); color:#fff;
+}
+.marketplace .card-actions .btn:nth-child(3):hover:not(:disabled) {
+  border-color:var(--accent-hover); background:var(--accent-hover);
+}
+.rental-confidence { background:#F0F1ED; }
+.confidence-heading h2 { letter-spacing:-.045em; }
+.confidence-points article { border-top-color:#C9CEC9; }
+@media (min-width:1500px) {
+  .marketplace .rental-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+}
+@media (max-width:1100px) {
+  .marketplace .rental-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+@media (max-width:800px) {
+  .listings.marketplace { padding:32px 20px 52px; }
+  .marketplace-intro-row h1 { font-size:clamp(2.65rem,8vw,4rem); }
+  .marketplace .rental-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px 14px; }
+  .marketplace .card-actions { grid-template-columns:1fr 1fr; }
+  .marketplace .card-actions .btn:first-child { grid-column:1/-1; }
+}
+@media (max-width:520px) {
+  .marketplace-intro-row h1 { font-size:clamp(2.7rem,12vw,3.7rem); }
+  .marketplace-intro-row h1 span::after { height:3px; bottom:-3px; }
+  .marketplace-search { min-height:54px; }
+  .marketplace-search > button { min-width:0; }
+  .listings.marketplace { padding:28px 15px 44px; }
+  .marketplace .rental-grid { grid-template-columns:1fr; gap:19px; }
+  .marketplace .card-image-wrap { aspect-ratio:1.4 / 1; height:auto; }
+  .marketplace .card-actions { grid-template-columns:1fr 1fr 1fr; }
+  .marketplace .card-actions .btn:first-child { grid-column:auto; }
+  .marketplace .card-actions .btn { font-size:10px; }
+}
