@@ -166,15 +166,17 @@ function handleSubmit(event) {
               </button>
             </form>
 
-            <p className="auth-switch">
-              {isSignUp
-                ? 'Already have an account?'
-                : "Don't have an account?"}
-              {' '}
-              <button type="button" onClick={onSwitch}>
-                {isSignUp ? 'Sign in' : 'Sign up'}
-              </button>
-            </p>
+            {!isAdminLogin && (
+              <p className="auth-switch">
+                {isSignUp
+                  ? 'Already have an account?'
+                  : "Don't have an account?"}
+                {' '}
+                <button type="button" onClick={onSwitch}>
+                  {isSignUp ? 'Sign in' : 'Sign up'}
+                </button>
+              </p>
+            )}
 
             <p className="auth-terms">
               By continuing, you agree to use Rentify responsibly.
