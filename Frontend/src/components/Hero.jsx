@@ -12,34 +12,25 @@ function Hero({
   }
 
   const categories = [
-    { label: 'Tech & gadgets', value: 'Electronics' },
-    { label: 'Tools & DIY', value: 'Tools' },
-    { label: 'Home & living', value: 'Home Essentials' },
-    { label: 'Cars & rides', value: 'Vehicles' },
+    { label: 'Electronics', value: 'Electronics', icon: '✳' },
+    { label: 'Tools & DIY', value: 'Tools', icon: '⌁' },
+    { label: 'Home essentials', value: 'Home Essentials', icon: '⌂' },
+    { label: 'Vehicles', value: 'Vehicles', icon: '↗' },
   ]
 
   return (
-    <section className="hero hero-cinematic" aria-labelledby="hero-title">
-      <div className="cinematic-backdrop" aria-hidden="true">
-        <img
-          src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1800&q=88"
-          alt=""
-          fetchPriority="high"
-          decoding="async"
-        />
-      </div>
-
-      <div className="cinematic-content">
-        <div className="cinematic-copy">
-          <p className="cinematic-eyebrow"><span /> RENT THE MOMENT, NOT THE THING</p>
-          <h1 id="hero-title">More living.<br /><em>Less owning.</em></h1>
-          <p className="cinematic-description">
-            Need it for a day, a weekend, or a big project? Find useful things
-            nearby, rent them simply, and give them back when you're done.
+    <section className="hero hero-refined" aria-labelledby="hero-title">
+      <div className="refined-hero-inner">
+        <div className="refined-hero-copy">
+          <p className="refined-eyebrow"><span /> THE RENTAL MARKETPLACE</p>
+          <h1 id="hero-title">Make room for <em>more.</em></h1>
+          <p className="refined-hero-description">
+            From everyday essentials to once-in-a-while adventures, find what
+            you need without buying what you don't.
           </p>
 
-          <form className="cinematic-search" onSubmit={handleSubmit} role="search">
-            <span className="cinematic-search-icon" aria-hidden="true">
+          <form className="refined-search" onSubmit={handleSubmit} role="search">
+            <span className="refined-search-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" focusable="false">
                 <circle cx="10.8" cy="10.8" r="6.3" />
                 <path d="m15.5 15.5 4.2 4.2" />
@@ -49,39 +40,59 @@ function Hero({
             <input
               id="rental-search"
               type="search"
-              placeholder="What are you looking to rent?"
+              placeholder="Try camera, drill, sofa..."
               value={searchText}
               onChange={(event) => onSearchChange(event.target.value)}
             />
-            <button type="submit">Find a rental <span aria-hidden="true">↗</span></button>
+            <button type="submit">Search rentals <span aria-hidden="true">↗</span></button>
           </form>
 
-          <div className="cinematic-actions">
-            <button type="button" className="cinematic-link" onClick={onBrowse}>
+          <div className="refined-hero-actions">
+            <button type="button" className="refined-primary-link" onClick={onBrowse}>
               Explore all rentals <span aria-hidden="true">→</span>
             </button>
-            <span className="cinematic-action-divider" aria-hidden="true" />
-            <button type="button" className="cinematic-link" onClick={onOpenStore}>
-              Have something to share? <strong>List it</strong>
+            <span className="refined-divider" />
+            <button type="button" className="refined-secondary-link" onClick={onOpenStore}>
+              Have something to rent? <strong>List it</strong>
             </button>
           </div>
-        </div>
 
-        <div className="cinematic-image-label" aria-hidden="true">
-          <span className="cinematic-label-line" />
-          <span>GOOD THINGS, ON YOUR TERMS</span>
-        </div>
-
-        <div className="cinematic-bottom">
-          <span className="cinematic-bottom-title">FIND YOUR NEXT SOMETHING</span>
-          <div className="cinematic-categories" aria-label="Browse rental categories">
-            {categories.map((item) => (
-              <button key={item.value} type="button" onClick={() => onSelectCategory(item.value)}>
-                {item.label}<span aria-hidden="true">↗</span>
-              </button>
-            ))}
+          <div className="refined-category-area">
+            <p>Explore by category</p>
+            <div className="refined-category-list">
+              {categories.map((item) => (
+                <button key={item.value} type="button" onClick={() => onSelectCategory(item.value)}>
+                  <span className="refined-category-icon" aria-hidden="true">{item.icon}</span>
+                  {item.label}
+                  <span className="refined-category-arrow" aria-hidden="true">↗</span>
+                </button>
+              ))}
+            </div>
           </div>
-          <span className="cinematic-index">01 <i /> 04</span>
+        </div>
+
+        <div className="refined-hero-visual">
+          <div className="refined-image-wrap">
+            <img
+              src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1300&q=88"
+              alt="Warm, thoughtfully furnished living space"
+              fetchPriority="high"
+              decoding="async"
+            />
+            <div className="refined-image-shade" />
+            <div className="refined-image-caption">
+              <span>NEED IT FOR A LITTLE WHILE?</span>
+              <strong>Find your kind of useful.</strong>
+            </div>
+          </div>
+          <div className="refined-float-card">
+            <span className="refined-float-icon">↗</span>
+            <div>
+              <strong>Use more. Own less.</strong>
+              <span>A smarter way to get things done.</span>
+            </div>
+          </div>
+          <div className="refined-visual-note"><span /> GOOD THINGS CIRCULATE</div>
         </div>
       </div>
     </section>
