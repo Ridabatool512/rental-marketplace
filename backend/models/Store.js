@@ -21,6 +21,17 @@ const storeSchema = new mongoose.Schema(
       trim: true,
       maxlength: 200,
     },
+    category: {
+      type: String,
+      trim: true,
+      maxlength: 80,
+      default: "General",
+    },
+    coverImage: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
