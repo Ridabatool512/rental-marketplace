@@ -6731,116 +6731,108 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 
 
-/* Homepage hero: plainspoken, useful, and intentionally unadorned */
+/* Image-led marketplace hero with a restrained scroll parallax */
 .hero.hero-marketplace {
-  padding:0 32px 31px;
+  padding:0 32px 34px;
   background:#F8F7F2;
   color:#292A25;
+  overflow:hidden;
 }
-.hero-marketplace-inner { max-width:1216px; margin:0 auto; }
+.hero-marketplace-inner { max-width:1280px; margin:0 auto; }
 .marketplace-topline {
   min-height:49px; display:flex; align-items:center; justify-content:space-between;
   gap:18px; border-bottom:1px solid #DCD9D0;
 }
 .marketplace-topline > p {
-  margin:0; color:#77766D; font-size:9px; font-weight:600;
-  letter-spacing:.105em;
+  margin:0; color:#77766D; font-size:9px; font-weight:600; letter-spacing:.14em;
 }
-.marketplace-list-link {
-  padding:8px 0; border:0; background:transparent; color:#64645B;
-  font-size:10px; cursor:pointer;
-}
+.marketplace-list-link { padding:8px 0; border:0; background:transparent; color:#64645B; font-size:10px; cursor:pointer; }
 .marketplace-list-link span { color:#A94F3C; font-weight:700; }
-.marketplace-intro-row {
-  display:grid; grid-template-columns:minmax(0,1.45fr) minmax(220px,.55fr);
-  align-items:end; gap:clamp(30px,7vw,100px);
-  padding:57px 0 43px;
+.marketplace-hero-layout {
+  display:grid; grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);
+  align-items:center; gap:clamp(28px,5vw,72px); padding:35px 0 0;
 }
-.marketplace-headline-block { min-width:0; }
-.marketplace-intro-row h1 {
-  margin:0; font-family:Georgia,'Times New Roman',serif;
-  font-size:clamp(3.1rem,6.3vw,6.25rem); font-weight:400;
-  line-height:.94; letter-spacing:-.075em;
+.marketplace-hero-content { min-width:0; padding:8px 0 25px; }
+.marketplace-eyebrow { margin:0 0 18px; color:#A94F3C; font-size:9px; font-weight:700; letter-spacing:.16em; }
+.marketplace-hero-content h1 {
+  margin:0; font-family:Georgia,'Times New Roman',serif; font-size:clamp(2.9rem,5.2vw,5.2rem);
+  font-weight:400; line-height:.98; letter-spacing:-.065em;
 }
-.marketplace-intro-row h1 span { color:#A94F3C; font-style:italic; }
-.marketplace-intro-side {
-  max-width:310px; justify-self:end; padding-bottom:5px;
-}
-.marketplace-side-rule {
-  display:block; width:34px; height:2px; margin-bottom:17px; background:#A94F3C;
-}
-.marketplace-intro-side p {
-  margin:0 0 17px; color:#68685F; font-size:13px; line-height:1.8;
-}
-.marketplace-intro-side button {
-  padding:0 0 5px; border:0; border-bottom:1px solid #A94F3C;
-  background:transparent; color:#292A25; font-size:11px; font-weight:700; cursor:pointer;
-}
-.marketplace-intro-side button span { margin-left:8px; color:#A94F3C; }
+.marketplace-hero-content h1 em { color:#A94F3C; font-weight:400; }
+.marketplace-hero-description { max-width:330px; margin:20px 0 25px; color:#68685F; font-size:13px; line-height:1.75; }
 .marketplace-search {
-  display:flex; align-items:center; gap:14px; min-height:66px;
-  padding:7px 7px 7px 19px; border:1px solid #C9C6BC; border-radius:0;
-  background:#fff; box-shadow:none;
+  display:flex; align-items:center; gap:10px; min-height:58px; padding:6px 6px 6px 14px;
+  border:1px solid #C9C6BC; background:#fff; box-shadow:0 8px 24px rgba(43,39,30,.04);
 }
-.marketplace-search-icon { display:flex; color:#6E6E65; }
-.marketplace-search-icon svg {
-  width:19px; height:19px; fill:none; stroke:currentColor;
-  stroke-width:1.6; stroke-linecap:round;
-}
-.marketplace-search input {
-  min-width:0; flex:1; border:0; outline:0; background:transparent;
-  color:#292A25; font-size:13px;
-}
+.marketplace-search-icon { display:flex; flex-shrink:0; color:#6E6E65; }
+.marketplace-search-icon svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; }
+.marketplace-search input { min-width:0; flex:1; border:0; outline:0; background:transparent; color:#292A25; font-size:11px; }
 .marketplace-search input::placeholder { color:#96948A; }
-.marketplace-search > button {
-  align-self:stretch; min-width:145px; padding:0 17px;
-  border:0; border-radius:0; background:#292A25; color:#fff;
-  font-size:11px; font-weight:600; cursor:pointer;
-}
-.marketplace-search > button span { margin-left:13px; }
+.marketplace-search > button { align-self:stretch; min-width:94px; padding:0 12px; border:0; background:#292A25; color:#fff; font-size:10px; font-weight:600; cursor:pointer; }
+.marketplace-search > button span { margin-left:8px; }
 .marketplace-search > button:hover { background:#A94F3C; }
-.marketplace-categories {
-  display:flex; align-items:baseline; gap:28px; padding-top:23px;
-}
-.marketplace-category-label {
-  flex-shrink:0; color:#77766D; font-size:9px;
-  font-weight:600; letter-spacing:.1em;
-}
-.marketplace-category-links { display:flex; flex-wrap:wrap; gap:7px 22px; }
+.marketplace-categories { display:flex; flex-direction:column; align-items:flex-start; gap:11px; padding-top:23px; }
+.marketplace-category-label { color:#77766D; font-size:8px; font-weight:700; letter-spacing:.13em; }
+.marketplace-category-links { display:flex; flex-wrap:wrap; gap:7px 16px; }
 .marketplace-category-links button {
-  display:inline-flex; align-items:center; gap:8px; padding:4px 0;
-  border:0; border-bottom:1px solid transparent; border-radius:0;
-  background:transparent; color:#42433C; font-size:11px; cursor:pointer;
+  display:inline-flex; align-items:center; gap:5px; padding:3px 0; border:0; border-bottom:1px solid transparent;
+  background:transparent; color:#42433C; font-size:10px; cursor:pointer;
 }
-.marketplace-category-links button > span { color:#A94F3C; font-size:10px; }
-.marketplace-category-links button:hover { border-bottom-color:#A94F3C; color:#A94F3C; background:transparent; }
-.marketplace-category-links .marketplace-all-link {
-  margin-left:5px; color:#A94F3C; border-bottom-color:#A94F3C; font-weight:700;
+.marketplace-category-links button > span { color:#A94F3C; font-size:9px; }
+.marketplace-category-links button:hover { border-bottom-color:#A94F3C; color:#A94F3C; }
+.marketplace-category-links .marketplace-all-link { margin-left:2px; color:#A94F3C; border-bottom-color:#A94F3C; font-weight:700; }
+.marketplace-visual { min-width:0; }
+.marketplace-image-window {
+  position:relative; height:clamp(330px,39vw,500px); overflow:hidden; background:#E4DFD4;
+}
+.marketplace-image-window::after {
+  content:''; position:absolute; inset:48% 0 0; pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(25,25,21,.42));
+}
+.marketplace-image-window img {
+  display:block; width:100%; height:100%; object-fit:cover; object-position:center;
+  transform:translate3d(0,0,0) scale(1.08); will-change:transform;
+}
+.marketplace-image-index {
+  position:absolute; z-index:1; left:17px; bottom:17px; color:#fff;
+  font-size:8px; font-weight:700; letter-spacing:.14em;
+}
+.marketplace-image-caption {
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  padding:12px 0 0; color:#77766D; font-size:10px;
+}
+.marketplace-image-caption button {
+  padding:0 0 3px; border:0; border-bottom:1px solid #A94F3C; background:transparent;
+  color:#292A25; font-size:10px; white-space:nowrap; cursor:pointer;
+}
+.marketplace-image-caption button span { margin-left:6px; color:#A94F3C; }
+@media (prefers-reduced-motion:reduce) {
+  .marketplace-image-window img { transform:none !important; will-change:auto; }
 }
 @media (max-width:800px) {
-  .hero.hero-marketplace { padding:0 20px 25px; }
-  .marketplace-intro-row {
-    grid-template-columns:minmax(0,1fr) minmax(190px,.65fr);
-    gap:25px; padding:42px 0 32px;
-  }
-  .marketplace-intro-row h1 { font-size:clamp(2.8rem,6.6vw,4.5rem); }
-  .marketplace-intro-side p { font-size:12px; }
-  .marketplace-categories { align-items:flex-start; flex-direction:column; gap:12px; }
+  .hero.hero-marketplace { padding:0 20px 27px; }
+  .marketplace-hero-layout { grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:22px; padding-top:28px; }
+  .marketplace-hero-content h1 { font-size:clamp(2.65rem,6vw,4.1rem); }
+  .marketplace-image-window { height:clamp(300px,48vw,410px); }
+  .marketplace-hero-description { font-size:12px; }
+  .marketplace-search { gap:7px; padding-left:10px; }
+  .marketplace-search > button { min-width:76px; padding:0 8px; }
 }
 @media (max-width:560px) {
-  .hero.hero-marketplace { padding:0 16px 22px; }
+  .hero.hero-marketplace { padding:0 16px 23px; }
   .marketplace-topline { min-height:45px; gap:10px; }
-  .marketplace-topline > p { max-width:180px; font-size:8px; line-height:1.5; }
-  .marketplace-list-link { max-width:135px; text-align:right; font-size:9px; }
-  .marketplace-intro-row { grid-template-columns:1fr; gap:20px; padding:37px 0 25px; }
-  .marketplace-intro-row h1 { font-size:clamp(2.75rem,12vw,4.1rem); line-height:.97; }
-  .marketplace-intro-side { justify-self:start; max-width:350px; }
-  .marketplace-side-rule { margin-bottom:11px; }
-  .marketplace-intro-side p { margin-bottom:10px; font-size:12px; line-height:1.65; }
-  .marketplace-search { min-height:55px; gap:9px; padding:5px 5px 5px 11px; }
-  .marketplace-search input { font-size:11px; }
-  .marketplace-search > button { min-width:105px; padding:0 9px; font-size:10px; }
-  .marketplace-search > button span { display:none; }
-  .marketplace-category-links { gap:7px 16px; }
-  .marketplace-category-links button { font-size:10px; }
+  .marketplace-topline > p { font-size:8px; }
+  .marketplace-list-link { max-width:150px; text-align:right; font-size:9px; }
+  .marketplace-hero-layout { grid-template-columns:1fr; gap:23px; padding-top:31px; }
+  .marketplace-hero-content { padding:0; }
+  .marketplace-eyebrow { margin-bottom:13px; }
+  .marketplace-hero-content h1 { font-size:clamp(3rem,13vw,4.2rem); }
+  .marketplace-hero-description { max-width:300px; margin:15px 0 19px; }
+  .marketplace-search { min-height:54px; }
+  .marketplace-search input { font-size:10px; }
+  .marketplace-search > button { min-width:75px; font-size:10px; }
+  .marketplace-categories { padding-top:17px; }
+  .marketplace-category-links { gap:8px 15px; }
+  .marketplace-image-window { height:310px; }
+  .marketplace-image-caption { font-size:9px; }
 }
