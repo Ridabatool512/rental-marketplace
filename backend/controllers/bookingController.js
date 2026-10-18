@@ -283,7 +283,7 @@ const updateBookingStatus = async (req, res) => {
           const listing = await Listing.findById(booking.listing)
             .session(session);
 
-          if (!listing || listing.status !== "available") {
+          if (!listing || listing.status !== "available" || listing.quantity < 1) {
             responseStatus = 409;
             responseBody = {
               message: "This listing is no longer available.",
@@ -297,6 +297,7 @@ const updateBookingStatus = async (req, res) => {
             {
               _id: listing._id,
               status: "available",
+              quantity: { $gt: 0 },
             },
             {
               $inc: { __v: 1 },
@@ -323,6 +324,28 @@ const updateBookingStatus = async (req, res) => {
               message: "Another approved booking overlaps these dates.",
             };
             return;
+          }
+
+          // Each approved booking consumes one unit of stock. Stock is not
+          // automatically restored; the owner updates quantity when they restock.
+          const stockResult = await Listing.updateOne(
+            { _id: listing._id, status: "available", quantity: { $gt: 0 } },
+            { $inc: { quantity: -1 } },
+            { session }
+          );
+
+          if (stockResult.matchedCount !== 1) {
+            responseStatus = 409;
+            responseBody = { message: "This product is out of stock." };
+            return;
+          }
+
+          if (listing.quantity <= 1) {
+            await Listing.updateOne(
+              { _id: listing._id },
+              { $set: { status: "rented" } },
+              { session }
+            );
           }
         }
 
