@@ -33,7 +33,6 @@ import {
   saveProducts,
   saveStores,
 } from './data/storage'
-import './App.css'
 
 function mapBackendListing(listing) {
   return {
