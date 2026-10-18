@@ -59,7 +59,7 @@ function RentalModal({
           Rs.{item.pricePerDay} / day
           {item.storeName ? ` · ${item.storeName}` : ''}
           {item.location ? ` · ${item.location}` : ''}
-          {` · ${item.available ? 'Available' : 'Unavailable'}`}
+          {` · ${Number(item.quantity ?? 1) <= 0 ? 'Out of Stock' : item.available ? 'Available' : 'Unavailable'}`}
         </p>
 
         <p className="modal-description">{item.description}</p>
