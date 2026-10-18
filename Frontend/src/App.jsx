@@ -17,6 +17,7 @@ import StorePage from './components/StorePage'
 import CartPage from './components/CartPage'
 import CheckoutPage from './components/CheckoutPage'
 import AdminBookings from './components/AdminBookings'
+import MyBookings from './components/MyBookings'
 import api from './api/axios'
 
 
@@ -40,7 +41,7 @@ function mapBackendListing(listing) {
     name: listing.title,
     description: listing.description,
     category: listing.category
-      ? listing.category.replace(/\\b\\w/g, (letter) => letter.toUpperCase())
+      ? listing.category.replace(/\b\w/g, (letter) => letter.toUpperCase())
       : 'Other',
     image: listing.images?.[0] || '',
     images: listing.images || [],
@@ -547,6 +548,8 @@ async function handlePlaceOrder(customerDetails) {
             <RentalGrid
               items={visibleProducts}
               onViewDetails={setSelectedItem}
+              onAddToCart={handleAddToCart}
+              onRentNow={handleRentNow}
               emptyTitle={isLoadingListings ? 'Loading rentals...' : 'No server listings yet'}
               emptyText={isLoadingListings ? 'Getting available rentals from the server.' : 'Sign in and open your store to add the first rental listing.'}
               emptyActionLabel="Open Your Store"
@@ -778,17 +781,7 @@ async function handlePlaceOrder(customerDetails) {
 )}
  
 {page === 'my-bookings' && (
-  <main className="page">
-    <div className="section-heading">
-      <p className="eyebrow">Your account</p>
-      <h2>My Rental Requests</h2>
-    </div>
-    <button type="button" className="btn btn-primary" onClick={() => api.get('/bookings/my').then((response) => {
-      const rows = response.data.bookings || []
-      window.alert(rows.length ? rows.map((booking) => `${booking.listing?.title || 'Rental'} — ${booking.status} — Rs.${booking.totalPrice}`).join('\\n') : 'You have no rental requests yet.')
-    }).catch((error) => window.alert(error.response?.data?.message || 'Could not load your rental requests.'))}>Load My Requests</button>
-    <p>Your rental requests are saved on the server. Pending requests need admin approval.</p>
-  </main>
+  <MyBookings />
 )}
 
 {page === 'admin-bookings' && currentUser?.role === 'admin' && (
