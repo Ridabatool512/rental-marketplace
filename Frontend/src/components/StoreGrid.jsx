@@ -30,7 +30,7 @@ function StoreGrid({
         <StoreCard
           key={store.id}
           store={store}
-          productCount={products.filter((item) => item.storeId === store.id).length}
+          productCount={products.filter((item) => String(item.storeId) === String(store.id)).length}
           onOpen={onOpen}
           actionLabel={actionLabel}
         />
