@@ -486,6 +486,46 @@ const completeBooking = async (req, res) => {
   }
 };
 
+
+const markCodPaymentReceived = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid booking ID." });
+    }
+
+    const booking = await Booking.findById(id);
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found." });
+    }
+
+    if (booking.paymentMethod !== "cod") {
+      return res.status(400).json({ message: "This booking was not placed with Cash on Delivery." });
+    }
+
+    if (booking.status !== "approved") {
+      return res.status(400).json({ message: "Only approved bookings can have COD payment recorded." });
+    }
+
+    if (booking.paymentStatus === "paid") {
+      return res.status(409).json({ message: "This booking is already marked as paid." });
+    }
+
+    booking.paymentStatus = "paid";
+    await booking.save();
+
+    return res.status(200).json({
+      message: "Cash on Delivery payment recorded.",
+      booking,
+    });
+  } catch (error) {
+    console.error("Record COD payment error:", error.message);
+    return res.status(500).json({ message: "Unable to record COD payment." });
+  }
+};
+
 module.exports = {
   createBooking,
   getMyBookings,
@@ -494,4 +534,5 @@ module.exports = {
   updateBookingStatus,
   cancelBooking,
   completeBooking,
+  markCodPaymentReceived,
 };
