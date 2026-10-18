@@ -104,20 +104,8 @@ const createBooking = async (req, res) => {
       });
     }
 
-    // Pending requests do not reserve stock. The listing owner decides which
-    // requests to approve, subject to the remaining stock quantity.
-    const existingBooking = await Booking.findOne({
-      listing: listing._id,
-      status: "approved",
-      startDate: { $lt: end },
-      endDate: { $gt: start },
-    });
-
-    if (existingBooking) {
-      return res.status(409).json({
-        message: "These dates overlap with an already approved booking.",
-      });
-    }
+    // Pending requests do not reserve stock. The owner approves requests
+    // according to available inventory; approval enforces the stock limit.
 
     const pricePerDay = Number(listing.pricePerDay);
     const totalPrice = pricePerDay * totalDays;
