@@ -7098,3 +7098,45 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .navbar .mobile-nav-actions {
   border-color: #c99486;
 }
+
+
+/* Slightly deeper dusty rose for a little more contrast */
+.navbar {
+  background: #d2a397 !important;
+  border-bottom-color: #c18c7f !important;
+  box-shadow: 0 2px 10px rgba(83, 52, 39, 0.07);
+}
+.navbar .logo,
+.navbar .nav-link {
+  color: #402824;
+}
+.navbar .logo-mark {
+  background: #bd8175;
+  color: #fffaf6;
+}
+.navbar .nav-link.active,
+.navbar .nav-link:hover {
+  color: #54252d;
+  background: #e8c5ba;
+}
+.navbar .nav-actions .btn-primary,
+.navbar .btn-primary {
+  border-color: #8f514b;
+  background: #8f514b;
+  color: #fffaf6;
+}
+.navbar .nav-actions .btn-primary:hover,
+.navbar .btn-primary:hover:not(:disabled) {
+  border-color: #743c38;
+  background: #743c38;
+  color: #fffaf6;
+}
+.navbar .nav-menu-toggle {
+  border-color: #c18c7f;
+  background: #e8c5ba;
+  color: #402824;
+}
+.navbar .nav-links,
+.navbar .mobile-nav-actions {
+  border-color: #c18c7f;
+}
