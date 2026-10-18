@@ -16,18 +16,18 @@ function Hero({
     <section className="hero hero-marketplace" aria-labelledby="marketplace-intro">
       <div className="hero-marketplace-inner">
         <div className="marketplace-topline">
-          <p><span className="marketplace-live-dot" /> THE RENTAL MARKETPLACE</p>
+          <p><span className="marketplace-live-dot" /> GOOD THINGS, PASSED AROUND</p>
           <button type="button" className="marketplace-list-link" onClick={onOpenStore}>
-            Have something useful? List it <span aria-hidden="true">↗</span>
+            Got something gathering dust? List it <span aria-hidden="true">↗</span>
           </button>
         </div>
 
         <div className="marketplace-intro-row">
           <div>
-            <h1 id="marketplace-intro">Good things are<br /><span>better shared.</span></h1>
+            <h1 id="marketplace-intro">Borrow the good<br /><span>stuff.</span></h1>
           </div>
           <p className="marketplace-intro-copy">
-            Find useful things near you. Rent them for the time you need, then pass them on.
+            A drill for Saturday. A camera for the trip. Find what you need, use it well, then pass it on.
           </p>
         </div>
 
@@ -46,11 +46,11 @@ function Hero({
             value={searchText}
             onChange={(event) => onSearchChange(event.target.value)}
           />
-          <button type="submit">Find a rental <span aria-hidden="true">↗</span></button>
+          <button type="submit">Search rentals <span aria-hidden="true">↗</span></button>
         </form>
 
         <div className="marketplace-categories">
-          <span className="marketplace-category-label">Browse by category</span>
+          <span className="marketplace-category-label">START WITH A CATEGORY</span>
           <div className="marketplace-category-links">
             {PRODUCT_CATEGORIES.map((item) => (
               <button key={item} type="button" onClick={() => onSelectCategory(item)}>
