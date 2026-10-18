@@ -10,6 +10,9 @@ function ProductForm({ initialProduct, onSubmit, onCancel, submitLabel }) {
   const [pricePerDay, setPricePerDay] = useState(
     initialProduct?.pricePerDay?.toString() || '',
   )
+  const [quantity, setQuantity] = useState(
+    String(initialProduct?.quantity ?? 1),
+  )
   const [images, setImages] = useState(
     initialProduct?.images ||
       (initialProduct?.image ? [initialProduct.image] : []),
@@ -73,6 +76,11 @@ async function handleImageChange(event) {
     event.preventDefault()
     const nextErrors = {}
     const price = Number(pricePerDay)
+    const stockQuantity = Number(quantity)
+
+    if (!Number.isInteger(stockQuantity) || stockQuantity < 0) {
+      nextErrors.quantity = 'Stock quantity must be a whole number of zero or more.'
+    }
 
     if (!name.trim()) {
       nextErrors.name = 'Please enter a product name.'
@@ -99,6 +107,7 @@ async function handleImageChange(event) {
       description: description.trim(),
       category,
       pricePerDay: price,
+      quantity: stockQuantity,
       images,
       image: images[0] || '',
       available,
@@ -143,6 +152,20 @@ async function handleImageChange(event) {
             </option>
           ))}
         </select>
+      </label>
+
+      <label className="form-field">
+        Number of units in stock
+        <input
+          type="number"
+          min="0"
+          step="1"
+          value={quantity}
+          onChange={(event) => setQuantity(event.target.value)}
+          placeholder="1"
+        />
+        <small>When all units are rented, the listing becomes Out of Stock. Update this number when you restock.</small>
+        {errors.quantity && <span className="field-error">{errors.quantity}</span>}
       </label>
 
       <label className="form-field">
