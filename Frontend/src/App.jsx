@@ -482,6 +482,9 @@ async function handlePlaceOrder(customerDetails) {
         listingId: item.id,
         startDate,
         endDate,
+        phone: customerDetails.phone,
+        address: customerDetails.address,
+        notes: customerDetails.notes,
       })
       createdBookings.push(response.data.booking)
     }
