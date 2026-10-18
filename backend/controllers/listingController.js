@@ -16,6 +16,7 @@ const createListing = async (req, res) => {
       pricePerMonth,
       location,
       storeId,
+      quantity = 1,
     } = req.body;
 
     if (
@@ -52,6 +53,12 @@ const createListing = async (req, res) => {
     }
     if (store.owner.toString() !== req.user.id) {
       return res.status(403).json({ message: "You can only add listings to your own store." });
+    }
+
+    const stockQuantity = Number(quantity);
+
+    if (!Number.isInteger(stockQuantity) || stockQuantity < 0) {
+      return res.status(400).json({ message: "Quantity must be a whole number of zero or more." });
     }
 
     const dailyPrice = Number(pricePerDay);
@@ -106,6 +113,8 @@ const createListing = async (req, res) => {
           pricePerMonth: Number(pricePerMonth),
         }),
       location: location.trim(),
+      quantity: stockQuantity,
+      status: stockQuantity === 0 ? "rented" : "available",
       owner: req.user.id,
       store: store._id,
     });
@@ -142,7 +151,9 @@ const getListings = async (req, res) => {
       limit = 12,
     } = req.query;
 
-    const filter = { status: "available" };
+    // Keep sold-out listings visible in the marketplace with an Out of Stock label.
+    // Manually paused listings (status: unavailable) remain hidden.
+    const filter = { status: { $in: ["available", "rented"] } };
 
     if (category) {
       filter.category = category.trim().toLowerCase();
@@ -336,6 +347,7 @@ const updateListing = async (req, res) => {
       "pricePerMonth",
       "location",
       "status",
+      "quantity",
     ];
 
     const invalidFields = Object.keys(req.body).filter(
@@ -359,6 +371,15 @@ const updateListing = async (req, res) => {
           return res.status(400).json({
             message: `${field} must be a non-empty string.`,
           });
+        }
+
+        if (field === "quantity") {
+          const quantity = Number(req.body.quantity);
+          if (!Number.isInteger(quantity) || quantity < 0) {
+            return res.status(400).json({ message: "Quantity must be a whole number of zero or more." });
+          }
+          listing.quantity = quantity;
+          continue;
         }
 
         if (
@@ -400,6 +421,14 @@ const updateListing = async (req, res) => {
           listing.set(field, req.body[field]);
         }
       }
+    }
+
+    // Zero stock always means out of stock. Increasing stock re-enables a previously sold-out listing,
+    // unless the owner explicitly keeps it unavailable.
+    if (listing.quantity <= 0) {
+      listing.status = "rented";
+    } else if (listing.status === "rented") {
+      listing.status = req.body.status === "unavailable" ? "unavailable" : "available";
     }
 
     await listing.save();
