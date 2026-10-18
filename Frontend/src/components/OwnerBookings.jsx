@@ -5,6 +5,7 @@ function OwnerBookings() {
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [workingId, setWorkingId] = useState('')
 
   const loadBookings = useCallback(async () => {
     setLoading(true)
@@ -23,12 +24,38 @@ function OwnerBookings() {
     loadBookings()
   }, [loadBookings])
 
+  async function updateStatus(id, status) {
+    setWorkingId(id)
+    setError('')
+    try {
+      await api.patch(`/bookings/${id}/status`, { status })
+      await loadBookings()
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || 'Could not update this booking.')
+    } finally {
+      setWorkingId('')
+    }
+  }
+
+  async function markPaymentReceived(id) {
+    setWorkingId(id)
+    setError('')
+    try {
+      await api.patch(`/bookings/${id}/cod-payment`)
+      await loadBookings()
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || 'Could not record this payment.')
+    } finally {
+      setWorkingId('')
+    }
+  }
+
   return (
     <main className="page">
       <div className="section-heading">
         <p className="eyebrow">Store owner dashboard</p>
         <h2>Booking Updates</h2>
-        <p>See rental requests for your listings and whether the admin approved or rejected them.</p>
+        <p>Review requests for your products, approve or reject rentals, and record Cash on Delivery payments.</p>
       </div>
 
       <button type="button" className="btn btn-secondary" onClick={loadBookings} disabled={loading}>
@@ -48,11 +75,11 @@ function OwnerBookings() {
         {bookings.map((booking) => {
           const status = String(booking.status || 'pending').toLowerCase()
           const statusMessage = status === 'approved'
-            ? 'The admin approved this rental request.'
+            ? 'You approved this rental request.'
             : status === 'rejected'
-              ? 'The admin rejected this rental request.'
+              ? 'You rejected this rental request.'
               : status === 'pending'
-                ? 'Waiting for admin review.'
+                ? 'Waiting for your decision.'
                 : status === 'cancelled'
                   ? 'This rental request was cancelled.'
                   : status === 'completed'
@@ -76,6 +103,41 @@ function OwnerBookings() {
                 <p><strong>Total:</strong> Rs. {booking.totalPrice}</p>
                 <p><strong>Status:</strong> <span className={`booking-status booking-status-${status}`}>{status.toUpperCase()}</span></p>
                 <p>{statusMessage}</p>
+                {status === 'pending' && (
+                  <div className="card-actions">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      disabled={workingId === booking._id}
+                      onClick={() => updateStatus(booking._id, 'approved')}
+                    >
+                      {workingId === booking._id ? 'Updating...' : 'Approve Rental'}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      disabled={workingId === booking._id}
+                      onClick={() => updateStatus(booking._id, 'rejected')}
+                    >
+                      Reject Request
+                    </button>
+                  </div>
+                )}
+                {status === 'approved' && booking.paymentMethod === 'cod' && booking.paymentStatus !== 'paid' && (
+                  <div className="card-actions">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      disabled={workingId === booking._id}
+                      onClick={() => markPaymentReceived(booking._id)}
+                    >
+                      {workingId === booking._id ? 'Updating...' : 'Mark COD as Collected'}
+                    </button>
+                  </div>
+                )}
+                {status === 'approved' && booking.paymentStatus === 'paid' && (
+                  <p><strong>Payment:</strong> Paid</p>
+                )}
               </div>
             </article>
           )
