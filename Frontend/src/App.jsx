@@ -733,7 +733,7 @@ async function handlePlaceOrder(customerDetails) {
 
           <StoreGrid
             stores={stores}
-            products={backendListings}
+            products={[...backendListings, ...localProductsForDisplay]}
             onOpen={(store) => openPublicStore(store.id)}
             emptyTitle="No stores yet. Be the first to open your store!"
             emptyText="Visitors will see stores here after someone creates one."
@@ -787,7 +787,7 @@ async function handlePlaceOrder(customerDetails) {
 
           <StoreGrid
             stores={myStores}
-            products={backendListings}
+            products={[...backendListings, ...localProductsForDisplay]}
             actionLabel="Manage store"
             onOpen={(store) => openDashboard(store.id)}
             emptyTitle="You have not opened a store yet"
