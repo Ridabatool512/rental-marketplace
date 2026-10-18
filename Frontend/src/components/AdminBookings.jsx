@@ -79,6 +79,29 @@ function AdminBookings() {
                   </button>
                 </div>
               )}
+              {booking.status === 'approved' && booking.paymentMethod === 'cod' && booking.paymentStatus !== 'paid' && (
+                <div className="card-actions">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    disabled={workingId === booking._id}
+                    onClick={async () => {
+                      setWorkingId(booking._id)
+                      setError('')
+                      try {
+                        await api.patch(`/bookings/${booking._id}/cod-payment`)
+                        await loadBookings()
+                      } catch (requestError) {
+                        setError(requestError.response?.data?.message || 'Could not record COD payment.')
+                      } finally {
+                        setWorkingId('')
+                      }
+                    }}
+                  >
+                    {workingId === booking._id ? 'Updating...' : 'Mark COD as Collected'}
+                  </button>
+                </div>
+              )}
             </div>
           </article>
         ))}
