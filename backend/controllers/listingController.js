@@ -253,6 +253,27 @@ const getListings = async (req, res) => {
   }
 };
 
+
+const getMyListings = async (req, res) => {
+  try {
+    const listings = await Listing.find({ owner: req.user.id })
+      .populate("owner", "name")
+      .populate("store", "name category location coverImage")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return res.status(200).json({
+      total: listings.length,
+      listings,
+    });
+  } catch (error) {
+    console.error("Get my listings error:", error.message);
+    return res.status(500).json({
+      message: "Failed to fetch your listings.",
+    });
+  }
+};
+
 const getListingById = async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) {
@@ -442,6 +463,7 @@ const deleteListing = async (req, res) => {
 module.exports = {
   createListing,
   getListings,
+  getMyListings,
   getListingById,
   updateListing,
   deleteListing,
