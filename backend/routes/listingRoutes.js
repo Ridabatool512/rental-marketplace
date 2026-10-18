@@ -5,6 +5,7 @@ const router = express.Router();
 const {
   createListing,
   getListings,
+  getMyListings,
   getListingById,
   updateListing,
   deleteListing,
@@ -14,6 +15,8 @@ const { protect } = require("../middleware/authMiddleware");
 
 // Get all available listings
 router.get("/", getListings);
+
+router.get("/my", protect, getMyListings);
 
 // Create a listing (login required)
 router.post("/", protect, createListing);
