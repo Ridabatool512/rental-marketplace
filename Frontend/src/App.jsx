@@ -794,6 +794,7 @@ async function handlePlaceOrder(customerDetails) {
 
 {page === 'checkout' && (
   <CheckoutPage
+    currentUser={currentUser}
     items={checkoutItems}
     onPlaceOrder={handlePlaceOrder}
     onBackToCart={handleOpenCart}
