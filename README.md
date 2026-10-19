@@ -1,25 +1,20 @@
 # Rentify — Rental Marketplace
 
-Rentify is a full-stack rental marketplace project designed to connect customers with rental listings through a web interface. The project separates the React frontend from the Node.js/Express backend and stores application data in MongoDB.
+Rentify is a full-stack rental marketplace that helps users explore rental listings and supports rental-related workflows through a React frontend and a Node.js/Express REST API. Application data is stored in MongoDB.
 
-> **Project status:** Core authentication, listing, booking, and demo payment workflows are being developed. Features such as stores, reviews, and complete admin management should be considered complete only when they are verified in the current build.
+## Features
 
-## 1. Problem Statement and Solution
+- **Separate user and admin roles** with JWT-based authentication.
+- **Rental listings** backed by MongoDB.
+- **Booking workflow** and booking-related API routes.
+- **Demo payment workflow** for project demonstrations; this is not a production payment gateway.
+- **AI Rental Assistant** for rental questions and help exploring available listings.
+- **Rental recommendations** that rank available listings against a user's query, category, location, and daily budget.
+- **Responsive React interface** with Axios for API requests.
 
-### Problem statement
-Finding and managing rentals through informal channels can make it difficult to compare listings, keep booking information organized, and track booking status. Rental providers also need a central place to publish listings and manage requests.
+> Feature availability can depend on the current deployed build and database content. Verify each workflow in the running app before presenting it as production-ready.
 
-### Proposed solution
-Rentify provides a web-based marketplace with separate user and admin authentication flows. Users can interact with rental listings and booking workflows, while the backend exposes REST API endpoints and stores application data in MongoDB.
-
-### Main project goals
-- Centralize rental listings and booking information.
-- Provide separate authentication flows for users and administrators.
-- Use a REST API to connect the frontend and backend.
-- Store application records in MongoDB.
-- Provide a foundation for listing, booking, and payment workflow improvements.
-
-## 2. Technology Stack
+## Technology Stack
 
 | Layer | Technologies |
 |---|---|
@@ -28,50 +23,72 @@ Rentify provides a web-based marketplace with separate user and admin authentica
 | Backend | Node.js, Express.js |
 | Database | MongoDB, Mongoose |
 | Authentication | JSON Web Tokens (JWT) |
-| Password security | bcryptjs |
-| Development tools | npm, Git, GitHub, Nodemon |
+| Password hashing | bcryptjs |
+| AI chat | Google Gemini API with a local listing-based fallback |
+| Development | npm, Nodemon, Git, GitHub |
 
-## 3. Setup and Installation
+## Project Structure
 
-### Prerequisites
+```text
+rental-marketplace/
+├── backend/
+│   ├── controllers/
+│   │   ├── aiChatController.js
+│   │   └── aiController.js
+│   ├── routes/
+│   └── server.js
+└── Frontend/
+    └── src/
+        ├── components/
+        │   └── AiRentalFinder.jsx
+        └── api/
+```
+
+## Getting Started
+
+### Requirements
+
 - Node.js and npm
 - Git
-- A MongoDB Atlas cluster or local MongoDB instance
+- MongoDB Atlas or a local MongoDB instance
 
-### Clone the repository
+### 1. Clone the repository
+
 ```bash
 git clone https://github.com/Ridabatool512/rental-marketplace.git
 cd rental-marketplace
 ```
 
-### Configure and run the backend
+### 2. Set up the backend
+
 ```bash
 cd backend
 npm install
 ```
 
-Create a `.env` file inside the `backend/` directory:
+Create a `.env` file inside `backend/`:
 
 ```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=replace_with_a_long_random_secret
-OPENAI_API_KEY=your_openai_api_key
-OPENAI_MODEL=gpt-5.5
+GEMINI_API_KEY=your_google_gemini_api_key
+GEMINI_MODEL=gemini-2.5-flash
 NODE_ENV=development
 ```
 
-Use your own MongoDB connection string and a strong, private JWT secret. Never commit the `.env` file or share database credentials.
+Use your own MongoDB connection string and a strong, private JWT secret. The Gemini key is optional: if it is not configured or the Gemini service is temporarily unavailable, the chat controller falls back to a basic response using current available listing data. Do not commit `.env` or expose secrets in frontend code.
 
-Start the backend in development mode:
+Start the backend:
 
 ```bash
 npm run dev
 ```
 
-The API is expected to run on port 5000 unless configured otherwise.
+The backend uses port 5000 by default unless your environment configuration overrides it.
 
-### Configure and run the frontend
+### 3. Set up the frontend
+
 Open a second terminal at the repository root:
 
 ```bash
@@ -80,99 +97,71 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite in your terminal.
+Open the local URL printed by Vite.
 
-### Connect frontend and backend
-Configure the frontend's Axios base URL to point to the backend API. For local development, the base URL is typically:
+### 4. Configure the API URL
+
+The frontend Axios base URL should point to your backend API. For local development, the expected base URL is commonly:
 
 ```text
 http://localhost:5000/api
 ```
 
-If your project uses a different API base URL in its current configuration, use that value instead. For deployment, configure the frontend to use the deployed backend URL and configure CORS on the backend for the frontend's origin.
+For deployment, set the frontend to the deployed backend URL and configure backend CORS to allow requests from your frontend domain.
 
-## 4. AI Features
+## AI Features
 
-### AI Assistant (LLM-powered chat)
+### AI Rental Assistant
 
-Rentify includes a conversational AI assistant powered by the OpenAI Responses API. Users can ask general questions, ask for help choosing rentals, ask about how the marketplace works, and follow up in the same conversation. The backend supplies a limited snapshot of currently available listings so answers about Rentify inventory can use actual listing titles, prices, categories, conditions, and locations.
+The chatbot is available from the Rentify interface and sends conversation messages to `POST /api/ai/chat`.
 
-- Frontend: `Frontend/src/components/AiRentalFinder.jsx`
-- Endpoint: `POST /api/ai/chat`
-- Backend controller: `backend/controllers/aiChatController.js`
-- Model: `OPENAI_MODEL` environment variable (defaults to `gpt-5.5`)
-- API key: `OPENAI_API_KEY`, stored only in the backend environment
+- **Frontend component:** `Frontend/src/components/AiRentalFinder.jsx`
+- **Backend controller:** `backend/controllers/aiChatController.js`
+- **AI provider:** Google Gemini, configured with `GEMINI_API_KEY` and optionally `GEMINI_MODEL`
+- **Fallback behavior:** if Gemini is not configured, returns an error, is overloaded, or produces no answer, the backend returns a listing-based fallback response.
+- **Listing context:** the controller loads currently available listings with remaining quantity and uses their displayed details when responding.
 
-The chat uses the latest messages from the current browser conversation as context. The backend limits conversation history and message size, and it does not expose the API key to the frontend. The assistant can answer questions and suggest options, but it cannot create bookings, process payments, or change account details.
+The assistant can answer questions and help users explore rental options, but it does not create bookings, process payments, or change account details. Always confirm current prices and availability on the relevant listing page.
 
-### AI Rental Finder (content-based recommendations)
+### AI Rental Recommendations
 
-Rentify also includes a separate lightweight recommendation endpoint that ranks available listings using text tokenization, TF-IDF-inspired term weighting, cosine similarity, and preference score adjustments.
+The recommendations endpoint is `GET /api/ai/recommendations`, implemented in `backend/controllers/aiController.js`.
 
-- Endpoint: `GET /api/ai/recommendations`
-- Backend controller: `backend/controllers/aiController.js`
+It uses a TF-IDF-inspired text weighting and cosine-similarity ranking, with additional weighting for matching category, location, and daily budget. This is a local recommendation algorithm; it does not call an external AI model. Match scores are ranking scores, not probabilities.
 
-This recommendation algorithm does not call an external model. Its match scores are relative ranking scores, not probabilities.
+Example request:
 
-## 5. AI API Configuration and Usage
-
-Create an OpenAI API key in your OpenAI developer account, then add it to the private `backend/.env` file:
-
-```env
-OPENAI_API_KEY=your_openai_api_key
-OPENAI_MODEL=gpt-5.5
+```text
+GET /api/ai/recommendations?query=camera&category=electronics&location=Rawalpindi&maxPrice=2000
 ```
 
-Restart the backend after changing environment variables. Never add the API key to frontend environment variables, commit it to Git, or expose it in browser code. API use may incur charges depending on your OpenAI account and usage.
+Use URL encoding for query values that contain spaces or special characters.
 
-The chat request is sent to `POST /api/ai/chat` with a `messages` array containing `user` and `assistant` messages. The response contains an `answer` string. If the API key is missing, the endpoint returns a configuration error rather than pretending to generate an AI response.
+## Security Notes
 
-Example recommendation request: `GET /api/ai/recommendations?query=camera&category=electronics&location=Rawalpindi&maxPrice=2000`.
+- Keep `backend/.env` out of Git.
+- Never place Gemini or other secret API keys in frontend code.
+- Use a strong, unique `JWT_SECRET` outside local development.
+- The demo payment flow is not a substitute for a verified production payment provider.
+- Treat AI-generated answers as assistance, not as authoritative confirmation of rental terms.
 
-## 6. Product Screenshots
+## Screenshots
 
-Product screenshots have not yet been added to the repository. Add real screenshots captured from the running application in `docs/screenshots/`, then embed them below. Suggested screenshots:
+Screenshots have not been embedded in this README yet. Add screenshots captured from the running application to a folder such as `docs/screenshots/`, then reference them here. Only document screens and features that work in the version being submitted.
 
-- User landing page or marketplace
-- Listing details
-- Login and registration
-- Booking flow and booking status
-- Admin dashboard, if available in the current build
-- Payment demo screen, if available in the current build
+## Team Contributions
 
-Example Markdown to use after adding each image:
+The project work is divided across backend and frontend responsibilities.
 
-```markdown
-![Marketplace page](docs/screenshots/marketplace.png)
-```
-
-Only include screenshots of features that are implemented and working in the submitted version.
-
-## 7. Team Member Contributions
-
-The project is divided between three backend members and two frontend members. Rida Batool has the primary backend responsibility and the largest share of backend integration work.
-
-| Team member | Module | Responsibilities |
+| Team member | Area | Responsibilities |
 |---|---|---|
-| **Rida Batool** | Backend lead — largest workload | Lead backend architecture and integration; manage authentication and separate user/admin login; coordinate MongoDB models and API conventions; handle payment workflow integration, environment configuration, security checks, debugging, and final backend integration/testing. |
-| **Nirma Waleed** | Backend — listings and stores | Handle listing APIs and related validation; work on store-related backend endpoints; test the assigned routes and document request/response formats. |
-| **Khadija Mehmood** | Backend — reviews and booking support | Handle review-related APIs and validation; assist with selected booking endpoint tests and error handling; document and test the assigned endpoints. Keep this scope smaller than the backend lead's workload. |
-| **Maria Aslam** | Frontend — marketplace UI | Develop and refine the marketplace and listing screens; design reusable catalog, listing, and store-card components; improve page layout, visual consistency, responsive styling, and navigation; build listing-related UI states such as search/filter/sort controls where supported; and check that key screens remain clear and usable across desktop and mobile sizes. Coordinate component props and API data needs with Laraib and the backend team. |
-| **Laraib Sadiq** | Frontend — pages and API integration | Build assigned frontend pages and forms, connect them to backend endpoints using Axios, handle loading/error states, and test authentication and booking-related user flows with the backend team. |
+| **Rida Batool** | Backend lead and integration | Lead backend architecture and integration; manage authentication and separate user/admin access; coordinate MongoDB models and API conventions; integrate payment workflow; handle environment configuration, security checks, debugging, and backend testing. |
+| **Nirma Waleed** | Backend — listings and stores | Work on listing APIs and validation, store-related endpoints, route testing, and API documentation. |
+| **Khadija Mehmood** | Backend — reviews and booking support | Work on review APIs and validation, assist with selected booking endpoint tests and error handling, and document assigned endpoints. |
+| **Maria Aslam** | Frontend — marketplace UI | Build marketplace and listing screens, reusable catalog/listing/store-card components, responsive styling, navigation, and supported search/filter/sort UI. |
+| **Laraib Sadiq** | Frontend — pages and API integration | Build assigned pages and forms, connect them to backend endpoints using Axios, handle loading/error states, and test authentication and booking-related flows with the backend team. |
 
-### Collaboration and integration
-- Backend members should coordinate API paths, request bodies, response formats, and authentication requirements before frontend integration.
-- Frontend members should use the agreed API base URL and avoid duplicating backend business logic in the browser.
-- Each member should work on a separate feature branch and open a pull request to main after testing.
-- The table describes the agreed task allocation. Update it if the team's actual completed work changes, and only claim contributions that each member has completed.
-
-## Current Scope and Notes
-
-- Separate user and admin login flows are part of the project design.
-- Listing and booking workflows are part of the backend scope.
-- The payment workflow is a demo/simulated workflow; do not treat it as a production payment gateway.
-- Availability of store management, reviews, and advanced admin features should be verified against the current implementation.
-- Do not commit database backups, secrets, or local environment files.
+Team members should coordinate endpoint paths, request/response formats, and authentication requirements. The table records the agreed allocation; update it to reflect actual completed work before final submission.
 
 ## Author
 
@@ -181,4 +170,4 @@ GitHub: [@Ridabatool512](https://github.com/Ridabatool512)
 
 ## Repository
 
-[https://github.com/Ridabatool512/rental-marketplace](https://github.com/Ridabatool512/rental-marketplace)
+[github.com/Ridabatool512/rental-marketplace](https://github.com/Ridabatool512/rental-marketplace)
