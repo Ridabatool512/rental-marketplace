@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import api from '../api/axios'
 import RentalGrid from './RentalGrid'
+import './AiRentalFinder.css'
 
 function AiRentalFinder({ onViewDetails, onAddToCart, onRentNow }) {
   const [query, setQuery] = useState('')
