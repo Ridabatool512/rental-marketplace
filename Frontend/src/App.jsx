@@ -6,6 +6,7 @@ import Hero from './components/Hero'
 import './App.css'
 import CategoryFilter from './components/CategoryFilter'
 import RentalGrid from './components/RentalGrid'
+import AiRentalFinder from './components/AiRentalFinder'
 import RentalModal from './components/RentalModal'
 import HowItWorks from './components/HowItWorks'
 import Footer from './components/Footer'
@@ -740,6 +741,12 @@ async function handlePlaceOrder(customerDetails) {
 
         
 
+          <AiRentalFinder
+            onViewDetails={setSelectedItem}
+            onAddToCart={handleAddToCart}
+            onRentNow={handleRentNow}
+          />
+
           <section className="listings marketplace">
             <div className="section-heading">
               <p className="eyebrow">The good stuff, nearby</p>
@@ -821,6 +828,12 @@ async function handlePlaceOrder(customerDetails) {
           <CategoryFilter
             selectedCategory={category}
             onSelectCategory={setCategory}
+          />
+
+          <AiRentalFinder
+            onViewDetails={setSelectedItem}
+            onAddToCart={handleAddToCart}
+            onRentNow={handleRentNow}
           />
 
           <RentalGrid
