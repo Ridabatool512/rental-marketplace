@@ -56,6 +56,8 @@ Create a `.env` file inside the `backend/` directory:
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=replace_with_a_long_random_secret
+OPENAI_API_KEY=your_openai_api_key
+OPENAI_MODEL=gpt-5.5
 NODE_ENV=development
 ```
 
@@ -89,21 +91,43 @@ http://localhost:5000/api
 
 If your project uses a different API base URL in its current configuration, use that value instead. For deployment, configure the frontend to use the deployed backend URL and configure CORS on the backend for the frontend's origin.
 
-## 4. AI Methodology and Implementation
+## 4. AI Features
 
-Rentify now includes an **AI Rental Finder** that ranks available listings based on the user's text query and optional category, location, and maximum daily budget.
+### AI Assistant (LLM-powered chat)
 
-The backend uses a lightweight content-based ranking algorithm: text tokenization, TF-IDF-inspired term weighting, cosine similarity between the search and listing text, and additional score adjustments for category, location, and budget preferences. It returns up to eight recommendations with match scores and brief matching reasons.
+Rentify includes a conversational AI assistant powered by the OpenAI Responses API. Users can ask general questions, ask for help choosing rentals, ask about how the marketplace works, and follow up in the same conversation. The backend supplies a limited snapshot of currently available listings so answers about Rentify inventory can use actual listing titles, prices, categories, conditions, and locations.
 
-The feature is implemented in `Frontend/src/components/AiRentalFinder.jsx` and exposed through `GET /api/ai/recommendations` in `backend/routes/aiRoutes.js` and `backend/controllers/aiController.js`. It runs locally in the backend and does not call an external AI provider.
+- Frontend: `Frontend/src/components/AiRentalFinder.jsx`
+- Endpoint: `POST /api/ai/chat`
+- Backend controller: `backend/controllers/aiChatController.js`
+- Model: `OPENAI_MODEL` environment variable (defaults to `gpt-5.5`)
+- API key: `OPENAI_API_KEY`, stored only in the backend environment
 
-**Limitations:** This is a lightweight recommendation algorithm, not a trained neural network or generative AI model. Match scores are relative ranking scores, not probabilities. Results depend on the quality of listing metadata and should be tested with different queries and preferences.
+The chat uses the latest messages from the current browser conversation as context. The backend limits conversation history and message size, and it does not expose the API key to the frontend. The assistant can answer questions and suggest options, but it cannot create bookings, process payments, or change account details.
 
-## 5. AI Model Names and API Usage
+### AI Rental Finder (content-based recommendations)
 
-No external AI model or provider API is used. The recommendation method is TF-IDF-inspired text weighting, cosine similarity, and transparent preference-based score adjustments.
+Rentify also includes a separate lightweight recommendation endpoint that ranks available listings using text tokenization, TF-IDF-inspired term weighting, cosine similarity, and preference score adjustments.
 
-Example: `GET /api/ai/recommendations?query=camera&category=electronics&location=Rawalpindi&maxPrice=2000`. All parameters are optional; `maxPrice` is a non-negative daily budget.
+- Endpoint: `GET /api/ai/recommendations`
+- Backend controller: `backend/controllers/aiController.js`
+
+This recommendation algorithm does not call an external model. Its match scores are relative ranking scores, not probabilities.
+
+## 5. AI API Configuration and Usage
+
+Create an OpenAI API key in your OpenAI developer account, then add it to the private `backend/.env` file:
+
+```env
+OPENAI_API_KEY=your_openai_api_key
+OPENAI_MODEL=gpt-5.5
+```
+
+Restart the backend after changing environment variables. Never add the API key to frontend environment variables, commit it to Git, or expose it in browser code. API use may incur charges depending on your OpenAI account and usage.
+
+The chat request is sent to `POST /api/ai/chat` with a `messages` array containing `user` and `assistant` messages. The response contains an `answer` string. If the API key is missing, the endpoint returns a configuration error rather than pretending to generate an AI response.
+
+Example recommendation request: `GET /api/ai/recommendations?query=camera&category=electronics&location=Rawalpindi&maxPrice=2000`.
 
 ## 6. Product Screenshots
 
