@@ -741,12 +741,6 @@ async function handlePlaceOrder(customerDetails) {
 
         
 
-          <AiRentalFinder
-            onViewDetails={setSelectedItem}
-            onAddToCart={handleAddToCart}
-            onRentNow={handleRentNow}
-          />
-
           <section className="listings marketplace">
             <div className="section-heading">
               <p className="eyebrow">The good stuff, nearby</p>
@@ -828,12 +822,6 @@ async function handlePlaceOrder(customerDetails) {
           <CategoryFilter
             selectedCategory={category}
             onSelectCategory={setCategory}
-          />
-
-          <AiRentalFinder
-            onViewDetails={setSelectedItem}
-            onAddToCart={handleAddToCart}
-            onRentNow={handleRentNow}
           />
 
           <RentalGrid
@@ -1076,6 +1064,8 @@ async function handlePlaceOrder(customerDetails) {
       )}
 
       <Footer onNavigate={goTo} />
+
+      <AiRentalFinder />
 
       <RentalModal
   item={selectedItem}
