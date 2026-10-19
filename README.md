@@ -91,22 +91,19 @@ If your project uses a different API base URL in its current configuration, use 
 
 ## 4. AI Methodology and Implementation
 
-**AI is not currently implemented in the verified Rentify codebase.** Rentify is presently a conventional full-stack marketplace application. Its core workflows use application logic, REST API requests, database operations, and authentication rather than AI inference.
+Rentify now includes an **AI Rental Finder** that ranks available listings based on the user's text query and optional category, location, and maximum daily budget.
 
-No AI model, training pipeline, retrieval-augmented generation (RAG) pipeline, or AI-powered recommendation system is claimed in this version of the project. If an AI feature is added later, document its purpose, input/output flow, evaluation approach, limitations, and privacy considerations here.
+The backend uses a lightweight content-based ranking algorithm: text tokenization, TF-IDF-inspired term weighting, cosine similarity between the search and listing text, and additional score adjustments for category, location, and budget preferences. It returns up to eight recommendations with match scores and brief matching reasons.
+
+The feature is implemented in `Frontend/src/components/AiRentalFinder.jsx` and exposed through `GET /api/ai/recommendations` in `backend/routes/aiRoutes.js` and `backend/controllers/aiController.js`. It runs locally in the backend and does not call an external AI provider.
+
+**Limitations:** This is a lightweight recommendation algorithm, not a trained neural network or generative AI model. Match scores are relative ranking scores, not probabilities. Results depend on the quality of listing metadata and should be tested with different queries and preferences.
 
 ## 5. AI Model Names and API Usage
 
-**Not applicable to the current implementation:** no AI model or AI provider API has been verified in this repository.
+No external AI model or provider API is used. The recommendation method is TF-IDF-inspired text weighting, cosine similarity, and transparent preference-based score adjustments.
 
-The application does use a backend REST API for marketplace functionality. JWTs are used for authenticated requests, and Axios is used by the frontend to communicate with the backend. These are application/API technologies, not AI model APIs.
-
-If an AI service is integrated in a future version, add:
-- Provider and exact model name/version.
-- Feature that uses the model.
-- API endpoint and server-side integration flow.
-- Required environment variable names (never secret values).
-- Request/response format, error handling, cost controls, and data privacy measures.
+Example: `GET /api/ai/recommendations?query=camera&category=electronics&location=Rawalpindi&maxPrice=2000`. All parameters are optional; `maxPrice` is a non-negative daily budget.
 
 ## 6. Product Screenshots
 
