@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Bot, Sparkles, Send, RotateCcw } from 'lucide-react'
+import { Bot, Sparkles, Send, RotateCcw, X, MessageCircle } from 'lucide-react'
 import api from '../api/axios'
 import './AiRentalFinder.css'
 
@@ -18,6 +18,7 @@ function AiRentalFinder() {
   const [query, setQuery] = useState('')
   const [messages, setMessages] = useState([welcomeMessage])
   const [loading, setLoading] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
   async function sendMessage(event, prompt = query) {
     event?.preventDefault()
@@ -56,7 +57,22 @@ function AiRentalFinder() {
   }
 
   return (
-    <section className="ai-rental-finder" aria-labelledby="ai-rental-title">
+    <>
+      {!isOpen && (
+        <button
+          className="ai-chat-launcher"
+          type="button"
+          onClick={() => setIsOpen(true)}
+          aria-label="Open Rentify AI assistant"
+          title="Chat with Rentify AI"
+        >
+          <MessageCircle size={25} />
+          <span className="ai-chat-launcher-sparkle"><Sparkles size={13} /></span>
+        </button>
+      )}
+
+      {isOpen && (
+      <section className="ai-rental-finder" aria-labelledby="ai-rental-title" role="dialog" aria-modal="false">
       <header className="ai-chat-header">
         <div className="ai-chat-brand">
           <div className="ai-chat-avatar"><Bot size={23} /></div>
@@ -66,9 +82,14 @@ function AiRentalFinder() {
             <p><span className="ai-chat-status-dot" /> Powered by a language model</p>
           </div>
         </div>
-        <button className="ai-chat-reset" type="button" onClick={resetChat} aria-label="Start a new conversation" title="New conversation">
-          <RotateCcw size={17} />
-        </button>
+        <div className="ai-chat-header-actions">
+          <button className="ai-chat-reset" type="button" onClick={resetChat} aria-label="Start a new conversation" title="New conversation">
+            <RotateCcw size={16} />
+          </button>
+          <button className="ai-chat-close" type="button" onClick={() => setIsOpen(false)} aria-label="Close Rentify AI assistant" title="Close chat">
+            <X size={19} />
+          </button>
+        </div>
       </header>
 
       <div className="ai-chat-body">
@@ -123,7 +144,9 @@ function AiRentalFinder() {
         </div>
         <p className="ai-chat-disclaimer">AI can make mistakes. Confirm rental prices, availability, and booking details in Rentify.</p>
       </form>
-    </section>
+      </section>
+      )}
+    </>
   )
 }
 
