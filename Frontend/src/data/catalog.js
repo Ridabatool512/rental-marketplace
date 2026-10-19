@@ -35,9 +35,13 @@ export function filterProducts(products, searchText, category) {
   })
 }
 
+
 export function productsWithStoreInfo(products, stores) {
   return products.map((product) => {
-    const store = stores.find((item) => item.id === product.storeId)
+    const store = stores.find(
+      (item) => item.id === product.storeId
+    )
+
     return {
       ...product,
       storeName: store ? store.name : 'Unknown store',
@@ -45,3 +49,4 @@ export function productsWithStoreInfo(products, stores) {
     }
   })
 }
+

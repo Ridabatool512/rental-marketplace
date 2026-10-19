@@ -229,10 +229,10 @@ const simulateDemoPayment = async (req, res) => {
           },
         },
         {
-          new: true,
-          runValidators: true,
-          session,
-        }
+  returnDocument: "after",
+  runValidators: true,
+  session,
+}
       );
 
       if (!updatedPayment) {
