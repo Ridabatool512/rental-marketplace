@@ -11,6 +11,7 @@ const bookingRoutes = require("./routes/bookingRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const storeRoutes = require("./routes/storeRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
+const aiRoutes = require("./routes/aiRoutes");
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/stores", storeRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/ai", aiRoutes);
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
