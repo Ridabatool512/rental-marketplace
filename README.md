@@ -147,7 +147,7 @@ Use URL encoding for query values that contain spaces or special characters.
 
 ## Screenshots
 
-Screenshots have not been embedded in this README yet. Add screenshots captured from the running application to a folder such as `docs/screenshots/`, then reference them here. Only document screens and features that work in the version being submitted.
+https://drive.google.com/file/d/1le0iwdS1Mk8G0iRyGPa3vKRtuBuL0tFi/view?usp=drivesdk
 
 ## Team Contributions
 
