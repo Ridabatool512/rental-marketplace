@@ -93,13 +93,7 @@ function AiRentalFinder() {
       </header>
 
       <div className="ai-chat-body">
-        <div className="ai-chat-intro">
-          <div className="ai-chat-sparkle"><Sparkles size={19} /></div>
-          <div>
-            <h3>What can I help you with?</h3>
-            <p>Ask in your own words. I’ll use AI to understand your question, follow the conversation, and use current available Rentify listings when relevant.</p>
-          </div>
-        </div>
+        
 
         <div className="ai-chat-messages" aria-live="polite" aria-relevant="additions">
           {messages.map((message, index) => (
